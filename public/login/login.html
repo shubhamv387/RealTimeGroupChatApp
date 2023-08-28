@@ -21,7 +21,278 @@
     <title>Login Here</title>
   </head>
   <body>
-    <h1>Login Here</h1>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- LEFT SIDE -->
+        <div
+          class="col-md-6 col-12 p-5 d-flex flex-column"
+          style="height: 100vh"
+        >
+          <div class="d-flex justify-content-center align-items-center">
+            <img style="width: 40px" src="../src/logo.png" alt="" />
+          </div>
+
+          <div id="loginDiv">
+            <div class="heading mt-5">
+              <h1 class="fs-4">Login</h1>
+              <p class="text-secondary fw-bold">
+                Every journey has a beginning.
+              </p>
+            </div>
+            <!-- LOGIN FORM START -->
+            <div class="d-flex flex-row">
+              <form id="loginForm" class="w-100 mt-3">
+                <div class="mb-3">
+                  <label for="email" class="form-label fs-5"
+                    >Email address:</label
+                  >
+                  <div class="position-relative">
+                    <input
+                      required
+                      type="email"
+                      class="form-control ps-5 form-control-lg"
+                      id="email"
+                    />
+                    <i
+                      class="fa fa-envelope position-absolute top-50 fs-4"
+                      style="transform: translateY(-50%); left: 15px"
+                    ></i>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="password" class="form-label fs-5"
+                    >Password:</label
+                  >
+                  <div class="position-relative">
+                    <input
+                      required
+                      type="password"
+                      class="form-control px-5 form-control-lg"
+                      id="password"
+                    />
+                    <i
+                      class="fa fa-shield-alt position-absolute top-50 fs-4"
+                      style="transform: translateY(-50%); left: 15px"
+                    ></i>
+                    <!-- SHOW/HIDE PASSWORD START -->
+                    <i
+                      id="showPass"
+                      onclick="{
+                        document.getElementById('password').type = 'text';
+                        document.getElementById('hidePass').style.display = 'block';
+                        this.style.display = 'none'
+                        }"
+                      class="fa fa-eye position-absolute top-50 fs-4"
+                      style="
+                        transform: translateY(-50%);
+                        right: 15px;
+                        cursor: pointer;
+                      "
+                    ></i>
+                    <i
+                      id="hidePass"
+                      onclick="{
+                        document.getElementById('password').type = 'password';
+                        document.getElementById('showPass').style.display = 'block';
+                        this.style.display = 'none'
+                        }"
+                      class="fa fa-eye-slash position-absolute top-50 fs-4"
+                      style="
+                        transform: translateY(-50%);
+                        right: 15px;
+                        cursor: pointer;
+                        display: none;
+                      "
+                    ></i>
+                    <!-- SHOW/HIDE PASSWORD END -->
+                  </div>
+                </div>
+
+                <div class="my-3">
+                  <p
+                    onclick="{
+                      document.title = 'Request new password';
+                      document.getElementById('loginDiv').style.display = 'none';
+                      document.getElementById('forgotPassDiv').style.display = 'block';
+                  }"
+                    id="forgotPassword"
+                    class="my-3"
+                    style="
+                      cursor: pointer;
+                      -webkit-text-fill-color: transparent;
+                      background: linear-gradient(
+                        90deg,
+                        rgba(244, 11, 11, 0.8),
+                        rgba(0, 0, 0, 0.8) 87.19%
+                      );
+                      background-clip: text;
+                      -webkit-background-clip: text;
+                    "
+                  >
+                    forgot password?
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn text-white px-5 fs-5"
+                  style="
+                    border-radius: 50px;
+                    background: linear-gradient(
+                      90deg,
+                      rgba(244, 11, 11, 0.8),
+                      rgba(0, 0, 0, 0.8) 87.19%
+                    );
+                  "
+                >
+                  Login
+                </button>
+              </form>
+              <div class="w-25 d-sm-none d-lg-block"></div>
+            </div>
+            <!-- LOGIN FORM END -->
+            <div class="mt-3">
+              <p class="fs-5 fw-bold">
+                Don't have an account?
+                <a
+                  style="
+                    -webkit-text-fill-color: transparent;
+                    background: linear-gradient(
+                      90deg,
+                      rgba(244, 11, 11, 0.8),
+                      rgba(0, 0, 0, 0.8) 87.19%
+                    );
+                    background-clip: text;
+                    -webkit-background-clip: text;
+                  "
+                  href="../signup/singup.html"
+                  >SignUp</a
+                >
+              </p>
+            </div>
+          </div>
+
+          <div id="forgotPassDiv" style="display: none">
+            <div class="mt-5">
+              <h1 class="fs-4">Request New Password!</h1>
+              <p class="text-secondary">
+                Get a password reset link on your registered email.
+              </p>
+            </div>
+            <!-- FORGOT PASS FORM START -->
+            <div class="d-flex flex-row">
+              <form id="forgotPassForm" class="w-100 mt-3">
+                <div class="mb-3">
+                  <label for="email" class="form-label fs-5"
+                    >Email address:</label
+                  >
+                  <div class="position-relative">
+                    <input
+                      required
+                      type="email"
+                      class="form-control ps-5 form-control-lg"
+                      id="forgotPassEmail"
+                    />
+                    <i
+                      class="fa fa-envelope position-absolute top-50 fs-4"
+                      style="transform: translateY(-50%); left: 15px"
+                    ></i>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn text-white px-5 fs-5"
+                  style="
+                    border-radius: 50px;
+                    background: linear-gradient(
+                      90deg,
+                      rgba(244, 11, 11, 0.8),
+                      rgba(0, 0, 0, 0.8) 87.19%
+                    );
+                  "
+                >
+                  Request
+                </button>
+              </form>
+              <div class="w-25 d-sm-none d-lg-block"></div>
+            </div>
+            <!-- FORGOT PASS FORM END -->
+            <div class="heading mt-3">
+              <p class="fs-5 fw-bold">
+                Return to
+                <a
+                  style="
+                    -webkit-text-fill-color: transparent;
+                    background: linear-gradient(
+                      90deg,
+                      rgba(244, 11, 11, 0.8),
+                      rgba(0, 0, 0, 0.8) 87.19%
+                    );
+                    background-clip: text;
+                    -webkit-background-clip: text;
+                  "
+                  href="../login/login.html"
+                  >Login.</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- RIGHT SIDE -->
+        <div
+          class="col-md-6 p-lg-5 col-12 d-sm-none d-md-flex align-items-center flex-column text-white"
+          style="
+            background: linear-gradient(
+              200deg,
+              rgba(244, 11, 11, 0.8),
+              rgba(0, 0, 0, 0.8) 87.19%
+            );
+          "
+        >
+          <h1 class="text-center text-capitalize fw-bold mt-5 w-75">
+            Welcome to the real time<br />
+            group chat app!
+          </h1>
+          <ul class="list-group list-inline p-5">
+            <li class="fs-3 fw-light list-inline-item mt-3">
+              <i class="fa fa-check me-3"></i>
+              100% Real time chatting with friends.
+            </li>
+            <li class="fs-3 fw-light list-inline-item mt-3">
+              <i class="fa fa-check me-3"></i>
+              Instant message delivery to all participants.
+            </li>
+            <li class="fs-3 fw-light list-inline-item mt-3">
+              <i class="fa fa-check me-3"></i>
+              Support for file attachments and document sharing.
+            </li>
+            <li class="fs-3 fw-light list-inline-item mt-3">
+              <i class="fa fa-check me-3"></i>
+              User accounts with sign-up and login capabilities.
+            </li>
+            <li class="fs-3 fw-light list-inline-item mt-3">
+              <i class="fa fa-check me-3"></i>
+              End-to-end encryption for message privacy.
+            </li>
+          </ul>
+          <div class="w-100 d-flex g-4 justify-content-center">
+            <img
+              class="me-5"
+              style="height: 175px; width: 175px; border-radius: 30%"
+              src="https://student.sharpener.tech/static/media/loginpageimg2.d80f3d905fed0908da73.png"
+              alt=""
+            />
+            <img
+              style="height: 175px; width: 175px; border-radius: 30%"
+              src="https://student.sharpener.tech/static/media/loginpageimg1.86d0e2cdccb70bee1d46.png"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Bootstrap Bundle with Popper -->
     <script

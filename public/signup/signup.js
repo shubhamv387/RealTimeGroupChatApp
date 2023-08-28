@@ -30,6 +30,12 @@ signupForm.addEventListener("submit", async (e) => {
 
     window.location.href = "../login/login.html";
   } catch (error) {
+    const {
+      response: {
+        data: { message },
+      },
+    } = error;
+    alert(message);
     console.log(error);
   }
 });
