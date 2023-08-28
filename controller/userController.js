@@ -33,7 +33,7 @@ exports.signUp = async (req, res, next) => {
         .json({ success: false, message: "Something went wrong" });
     }
 
-    const token = jwt.sign({ id }, process.env.JWT_SECRET_KEY, {
+    const token = jwt.sign({ userId: id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "30d",
     });
 
@@ -65,7 +65,7 @@ exports.logIn = async (req, res, next) => {
         .status(400)
         .json({ success: false, message: "Wrong Credentials" });
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "30d",
     });
     return res

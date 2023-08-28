@@ -11,8 +11,8 @@ exports.findAllUsers = async () => {
 exports.findUserById = async (id) => {
   try {
     const user = await User.findOne({ where: { id } });
-    if (user) return user;
-    else return { success: false, message: `user not found with Id: ${id}` };
+    if (user) return { success: false, user };
+    return { success: false, message: `user not found with Id: ${id}` };
   } catch (error) {
     console.log(error);
     return { success: false, message: "Something went wrong!" };
