@@ -15,7 +15,7 @@ exports.authUser = async (req, res, next) => {
     if (!userData.success)
       return res.status(401).json({
         success: false,
-        message: "Not User Found, Please Login again",
+        message: "User Not Found, Please Login again",
       });
 
     req.user = userData.user;

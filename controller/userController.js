@@ -55,15 +55,15 @@ exports.logIn = async (req, res, next) => {
     const { success, user } = await userServices.findUserByEmail(email);
     if (!success)
       return res
-        .status(400)
-        .json({ success: false, message: "Wrong Credentials" });
+        .status(401)
+        .json({ success: false, message: "User not found!" });
 
     const confirmPass = bcrypt.compareSync(password, user.password);
 
     if (!confirmPass)
       return res
-        .status(400)
-        .json({ success: false, message: "Wrong Credentials" });
+        .status(401)
+        .json({ success: false, message: "User not authorized" });
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "30d",
