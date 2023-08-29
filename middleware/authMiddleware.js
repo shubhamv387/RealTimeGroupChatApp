@@ -19,6 +19,7 @@ exports.authUser = async (req, res, next) => {
       });
 
     req.user = userData.user;
+    next();
   } catch (error) {
     return res
       .status(401)
