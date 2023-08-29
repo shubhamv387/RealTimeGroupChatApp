@@ -6,17 +6,28 @@ chatBoxForm.addEventListener("submit", async (e) => {
 
   const chatTextEle = document.getElementById("chatText");
 
-  const response = await axios.post(
-    "http://localhost:3000/api/chatbox/chat",
-    { chatText: chatTextEle.value },
-    {
-      headers: {
-        Authorization: token,
-      },
+  try {
+    const chatText = chatTextEle.value.trim();
+
+    if (!chatText) {
+      chatTextEle.value = "";
+      return alert("speces only, are not allowed");
     }
-  );
-  if (response.data.success) {
-    console.log(response.data);
-    chatTextEle.value = "";
+
+    const response = await axios.post(
+      "http://localhost:3000/api/chatbox/chat",
+      { chatText },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    if (response.data.success) {
+      console.log(response.data);
+      chatTextEle.value = "";
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
