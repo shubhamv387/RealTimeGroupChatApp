@@ -10,6 +10,7 @@ exports.getAllUsers = async (req, res, next) => {
 
 exports.signUp = async (req, res, next) => {
   const user = req.body;
+  const t = await sequelize.transaction();
 
   try {
     const userFromEmail = await userServices.findUserByEmail(user.email);
@@ -20,11 +21,10 @@ exports.signUp = async (req, res, next) => {
         .json({ success: false, message: "email already exists!" });
     }
 
-    const t = await sequelize.transaction();
     const {
       success,
       createdUser: { id, fullName, email, phone },
-    } = await userServices.createNewUser(user);
+    } = await userServices.createNewUser(user, t);
 
     if (!success) {
       await t.rollback();

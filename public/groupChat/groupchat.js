@@ -36,7 +36,6 @@ chatBoxForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const chatTextEle = document.getElementById("chatText");
-
   try {
     const chatText = chatTextEle.value.trim();
 

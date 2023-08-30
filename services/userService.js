@@ -1,3 +1,4 @@
+const { Transaction } = require("sequelize");
 const User = require("../model/User");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
@@ -51,18 +52,21 @@ exports.findUserByEmail = async (email) => {
   }
 };
 
-exports.createNewUser = async (user) => {
+exports.createNewUser = async (user, t) => {
   const { fullName, email, phone, password } = user;
 
   try {
     const salt = bcrypt.genSaltSync(10);
     const hashedPass = bcrypt.hashSync(password, salt);
-    const createdUser = await User.create({
-      fullName,
-      email,
-      phone,
-      password: hashedPass,
-    });
+    const createdUser = await User.create(
+      {
+        fullName,
+        email,
+        phone,
+        password: hashedPass,
+      },
+      { transaction: t }
+    );
 
     return {
       success: true,
