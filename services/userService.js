@@ -10,6 +10,23 @@ exports.findAllUsers = async () => {
 
 exports.findUserById = async (id) => {
   try {
+    const user = await User.findOne(
+      { where: { id } },
+      {
+        attributes: { exclude: ["password"] },
+      },
+      { where: { id } }
+    );
+    if (user) return { success: true, user: user };
+    return { success: false, message: `user not found with Id: ${id}` };
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: "Something went wrong!" };
+  }
+};
+
+exports.findUserWithPassById = async (id) => {
+  try {
     const user = await User.findOne({ where: { id } });
     if (user) return { success: true, user };
     return { success: false, message: `user not found with Id: ${id}` };
@@ -22,12 +39,12 @@ exports.findUserById = async (id) => {
 exports.findUserByEmail = async (email) => {
   try {
     const user = await User.findOne({ where: { email } });
-    if (user)
+    if (user) {
       return {
         success: true,
         user,
       };
-    else return { success: false, message: `Email does not exists!` };
+    } else return { success: false, message: `Email does not exists!` };
   } catch (error) {
     console.log(error);
     return { success: false, message: "Something went wrong!" };

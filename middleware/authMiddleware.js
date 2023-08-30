@@ -10,15 +10,15 @@ exports.authUser = async (req, res, next) => {
         .json({ success: false, message: "Not authorized, no token" });
 
     const { userId } = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    const userData = await findUserById(userId);
+    const { success, user } = await findUserById(userId);
 
-    if (!userData.success)
+    if (!success)
       return res.status(401).json({
         success: false,
         message: "User Not Found, Please Login again",
       });
 
-    req.user = userData.user;
+    req.user = user;
     next();
   } catch (error) {
     return res
