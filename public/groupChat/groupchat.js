@@ -3,7 +3,7 @@ const token = localStorage.getItem("token");
 let locallySavedChats = [];
 
 window.addEventListener("DOMContentLoaded", async () => {
-  setInterval(async () => {
+  setTimeout(async () => {
     try {
       const chatBoxDiv = document.getElementById("chatBoxDiv");
       const chatBoxMessages = document.getElementById("chatBoxMessages");

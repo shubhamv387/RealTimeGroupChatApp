@@ -52,7 +52,11 @@
         text-align: center;
       }
       #chatBoxDiv {
+        overflow-y: auto;
+      }
+      #chatBoxMessages {
         overflow-y: scroll;
+        padding-block: 5px;
       }
       /* Scroll Bar Start */
       ::-webkit-scrollbar {
@@ -90,12 +94,7 @@
           style="max-width: 700px"
         >
           <div id="chatBoxMessages">
-            <!-- <p class="joined"><strong>You</strong> Joined the chat!</p>
-            <p class="left"><strong>Vaibhav :</strong> Hello!</p>
-            <p class="joined"><strong>Ramesh</strong> Joined the chat!</p>
-            <p class="right"><strong>You :</strong> Hey!</p>
-            <p class="right"><strong>You :</strong> Hey!</p>
-            <p class="left"><strong>Ramesh :</strong> Hello, How are yo guys?</p> -->
+            <!-- <p class="joined"><strong>You</strong> Joined the chat!</p> -->
           </div>
         </div>
       </div>
