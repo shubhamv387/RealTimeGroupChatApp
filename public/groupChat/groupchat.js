@@ -11,13 +11,13 @@ window.addEventListener("DOMContentLoaded", async () => {
       },
     });
     if (!success) return alert("Something went wrong!");
-    console.log(allChats, currentUserId);
+
     if (allChats.length <= 0) {
-      const chatBoxDiv = document.getElementById("chatBoxDiv");
+      const chatBoxMessages = document.getElementById("chatBoxMessages");
       const chatText = document.createElement("p");
       chatText.className = "joined";
       chatText.innerHTML = `<strong>You</strong> joined the chat`;
-      chatBoxDiv.appendChild(chatText);
+      chatBoxMessages.appendChild(chatText);
     } else {
       allChats.forEach((chat) => {
         showChatOnScreen(chat, currentUserId);
@@ -25,13 +25,14 @@ window.addEventListener("DOMContentLoaded", async () => {
       const chatText = document.createElement("p");
       chatText.className = "joined";
       chatText.innerHTML = `<strong>You</strong> joined the chat`;
-      chatBoxDiv.appendChild(chatText);
+      chatBoxMessages.appendChild(chatText);
     }
   } catch (error) {
     window.location.replace("../login/login.html");
     console.log(error);
   }
 });
+
 chatBoxForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -65,7 +66,7 @@ chatBoxForm.addEventListener("submit", async (e) => {
 });
 
 function showChatOnScreen(chat, currentUserId) {
-  const chatBoxDiv = document.getElementById("chatBoxDiv");
+  const chatBoxMessages = document.getElementById("chatBoxMessages");
   const chatText = document.createElement("p");
   let chatterName;
   if (chat.userId === currentUserId) {
@@ -75,7 +76,40 @@ function showChatOnScreen(chat, currentUserId) {
     chatterName = chat.user.fullName.split(" ")[0];
     chatText.className = "left";
   }
-
   chatText.innerHTML = `<strong>${chatterName} :</strong> ${chat.chat}`;
-  chatBoxDiv.appendChild(chatText);
+  chatBoxMessages.appendChild(chatText);
 }
+
+setInterval(async () => {
+  try {
+    const {
+      data: { success, allChats, currentUserId },
+    } = await axios.get("http://localhost:3000/api/chatbox", {
+      headers: {
+        Authorization: token,
+      },
+    });
+    if (!success) return alert("Something went wrong!");
+
+    if (allChats.length <= 0) {
+      const chatText = document.createElement("p");
+      chatText.className = "joined";
+      chatText.innerHTML = `<strong>You</strong> joined the chat`;
+      chatBoxMessage.appendChild(chatText);
+    } else {
+      const chatBoxDiv = document.getElementById("chatBoxDiv");
+      const chatBoxMessages = document.getElementById("chatBoxMessages");
+      chatBoxMessages.remove();
+
+      const chatBoxMessage = document.createElement("div");
+      chatBoxMessage.setAttribute("id", "chatBoxMessages");
+      chatBoxDiv.appendChild(chatBoxMessage);
+      allChats.forEach((chat) => {
+        showChatOnScreen(chat, currentUserId);
+      });
+    }
+  } catch (error) {
+    window.location.replace("../login/login.html");
+    console.log(error);
+  }
+}, 1000);
