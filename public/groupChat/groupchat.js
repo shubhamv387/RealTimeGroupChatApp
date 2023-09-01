@@ -278,6 +278,8 @@ newGroupForm.addEventListener("submit", async (e) => {
         addMembersToGroupDiv.style.display = "none";
         alert(data.message);
 
+        document.getElementById("otherDivs").style.pointerEvents = "all";
+
         const chatBoxDiv = document.getElementById("chatBoxDiv");
         const chatBoxMessages = document.getElementById("chatBoxMessages");
         chatBoxMessages.remove();

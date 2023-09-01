@@ -115,7 +115,10 @@
                 <a
                   class="dropdown-item"
                   href="#"
-                  onclick='document.getElementById("newGroupFormDiv").style.display="block";'
+                  onclick='{
+                    document.getElementById("newGroupFormDiv").style.display="block";
+                    document.getElementById("otherDivs").style.pointerEvents="none";
+                }'
                   >Create New Group</a
                 >
               </li>
@@ -163,7 +166,7 @@
     >
       <form
         id="newGroupForm"
-        class="row g-3 form-control position-relative shadow"
+        class="row g-3 form-control position-relative bg-light shadow-lg border border-1 border-secondary rounded-3"
       >
         <div class="col">
           <label for="groupName" class="form-label">Group Name:</label>
@@ -177,6 +180,7 @@
         <a
           onclick='{
               document.getElementById("newGroupFormDiv").style.display="none";
+              document.getElementById("otherDivs").style.pointerEvents="all";
             // document.getElementById("newGroupForm").remove();
           }'
           id="formClose"
@@ -193,7 +197,7 @@
 
     <!-- ADD USERS TO NEW GROUP START -->
     <div
-      class="container position-absolute p-0 shadow-lg border border-1 border-secondary rounded-3"
+      class="container position-absolute p-0 bg-light shadow-lg border border-1 border-secondary rounded-3"
       id="addMembersToGroupDiv"
       style="
         max-width: 90vw;
@@ -206,6 +210,7 @@
       <a
         onclick='{
           document.getElementById("addMembersToGroupDiv").style.display="none";
+          document.getElementById("otherDivs").style.pointerEvents="all";
         // document.getElementById("newGroupForm").remove();
       }'
         id="formClose"
@@ -230,12 +235,13 @@
           Shubham Kumar Vishwakarma
           <button class="btn btn-success">Add</button>
         </li>
-      </ul>
-      <button class="btn btn-dark m-2">Add Selected Members</button> -->
+      </ul> -->
+      <!-- <button class="btn btn-dark m-2">Add Selected Members</button> -->
     </div>
     <!-- ADD USERS TO NEW GROUP END -->
 
     <div
+      id="otherDivs"
       class="d-flex flex-column justify-content-between"
       style="height: calc(100vh - 70px)"
     >
