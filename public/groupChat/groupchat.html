@@ -58,6 +58,13 @@
         overflow-y: scroll;
         padding-block: 5px;
       }
+      .profileShow {
+        opacity: 100% !important;
+        transform: translateY(58%) !important;
+      }
+      .dropdown-toggle::after {
+        display: none;
+      }
       /* Scroll Bar Start */
       ::-webkit-scrollbar {
         width: 3px;
@@ -75,12 +82,158 @@
     </style>
   </head>
   <body>
+    <!-- HEADER START -->
     <div
-      class="container-fluid bg-dark d-flex justify-content-center align-items-center"
+      class="container-fluid bg-dark d-flex justify-content-center"
       style="height: 70px"
     >
-      <h1 class="text-center text-light m-0 p-0 fw-bold">Group chat App</h1>
+      <div
+        class="col d-flex justify-content-between align-items-center"
+        style="max-width: 700px"
+      >
+        <h1 class="d-inline p-2 fs-2 bg-dark text-white">
+          <a class="text-white text-decoration-none" href="./groupchat.html"
+            >Group Chat App</a
+          >
+        </h1>
+        <div class="col px-0">
+          <div class="btn-group float-end">
+            <i
+              data-bs-toggle="dropdown"
+              data-bs-auto-close="outside"
+              aria-expanded="false"
+              type="button"
+              class="fa-solid fa-user-large dropdown-toggle d-inline ms-auto fs-5 text-white rounded-circle border border-3 bg-dark border-white p-2"
+              style="cursor: pointer"
+            ></i>
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li>
+                <p id="welcomeText" class="px-3 m-0">Hello, User</p>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  onclick='document.getElementById("newGroupFormDiv").style.display="block";'
+                  >Create New Group</a
+                >
+              </li>
+              <li>
+                <div class="btn-group w-100 dropend">
+                  <span
+                    type="button"
+                    class="dropdown-toggle dropdown-item"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    All Groups
+                  </span>
+                  <ul id="groupList" class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" href="#">Group 1</a></li>
+                    <li><a class="dropdown-item" href="#">Group 2</a></li>
+                    <li><a class="dropdown-item" href="#">Group 3</a></li>
+                  </ul>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li class="d-flex">
+                <button class="btn btn-danger w-100 mx-2" id="logout">
+                  Log Out
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
+    <!-- HEADER END -->
+
+    <!-- CREATE NEW GROUP FORM START -->
+    <div
+      class="container p-5 position-absolute"
+      id="newGroupFormDiv"
+      style="
+        max-width: 475px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-48%, -50%);
+        display: none;
+      "
+    >
+      <form
+        id="newGroupForm"
+        class="row g-3 form-control position-relative shadow"
+      >
+        <div class="col">
+          <label for="groupName" class="form-label">Group Name:</label>
+          <input required type="text" class="form-control" id="groupName" />
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-success mb-3">
+            Create Group
+          </button>
+        </div>
+        <a
+          onclick='{
+              document.getElementById("newGroupFormDiv").style.display="none";
+            // document.getElementById("newGroupForm").remove();
+          }'
+          id="formClose"
+          class="d-flex btn w-auto border-0 bg-transparent"
+          style="position: absolute; top: -30px; right: -20px"
+        >
+          <i
+            class="fa-solid fa-circle-xmark d-inline fs-1 text-danger bg-light rounded-circle"
+          ></i>
+        </a>
+      </form>
+    </div>
+    <!-- CREATE NEW GROUP FORM END -->
+
+    <!-- ADD USERS TO NEW GROUP START -->
+    <div
+      class="container position-absolute p-0 shadow-lg border border-1 border-secondary rounded-3"
+      id="addMembersToGroupDiv"
+      style="
+        max-width: 90vw;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+      "
+    >
+      <a
+        onclick='{
+          document.getElementById("addMembersToGroupDiv").style.display="none";
+        // document.getElementById("newGroupForm").remove();
+      }'
+        id="formClose"
+        class="d-flex btn w-auto border-0 bg-transparent p-0"
+        style="position: absolute; top: -10px; right: -10px; z-index: 99"
+      >
+        <i
+          class="fa-solid fa-circle-xmark d-inline fs-1 text-danger bg-light rounded-circle"
+        ></i>
+      </a>
+      <li class="list-group-item bg-primary text-center text-white fs-5">
+        All Users
+      </li>
+      <!-- <ul
+        id="addMemberList"
+        class="list-group list-unstyled"
+        style="max-height: 75vh; overflow-y: auto"
+      >
+        <li
+          class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center"
+        >
+          Shubham Kumar Vishwakarma
+          <button class="btn btn-success">Add</button>
+        </li>
+      </ul>
+      <button class="btn btn-dark m-2">Add Selected Members</button> -->
+    </div>
+    <!-- ADD USERS TO NEW GROUP END -->
 
     <div
       class="d-flex flex-column justify-content-between"
@@ -122,6 +275,9 @@
       </div>
       <!-- CHAT MESSAGE FORM END -->
     </div>
+
+    <!-- CREATE NEW GROUP START -->
+    <!-- CREATE NEW GROUP END -->
 
     <!-- Bootstrap Bundle with Popper -->
     <script

@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get("/", authUser, chatController.getAllChats);
 
-router.get("/:chatId", authUser, chatController.getLimitedChats);
+router.get("/:chatId/:groupId", authUser, chatController.getLimitedChats);
 
-router.post("/chat", authUser, chatController.sendMessage);
+router.post("/chat/:groupId", authUser, chatController.sendMessage);
 
 module.exports = router;

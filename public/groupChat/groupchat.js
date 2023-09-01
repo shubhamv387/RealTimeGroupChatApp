@@ -1,5 +1,6 @@
 const chatBoxForm = document.getElementById("chatBoxForm");
 const token = localStorage.getItem("token");
+const groupId = localStorage.getItem("groupId");
 let locallySavedChats = [];
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -26,12 +27,19 @@ window.addEventListener("DOMContentLoaded", async () => {
         lastChatId = locallySavedChats[locallySavedChats.length - 1].id;
 
       const {
-        data: { success, allChats, currentUserId },
-      } = await axios.get(`http://localhost:3000/api/chatbox/${lastChatId}`, {
-        headers: {
-          Authorization: token,
-        },
-      });
+        data: { success, allChats, currentUserId, currentUserFullName },
+      } = await axios.get(
+        `http://localhost:3000/api/chatbox/${lastChatId}/${groupId}`,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      document.getElementById("welcomeText").innerHTML = `Hello, ${
+        currentUserFullName.split(" ")[0]
+      }!`;
+
       if (!success) return alert("Something went wrong!");
 
       localStorage.setItem("currentUserId", currentUserId);
@@ -63,7 +71,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       alert("Something went wrong!");
       console.log(error);
-      window.location.replace("../login/login.html");
+      // window.location.replace("../login/login.html");
     }
   }, 1000);
 });
@@ -83,7 +91,7 @@ chatBoxForm.addEventListener("submit", async (e) => {
     const {
       data: { success, createdChat, currentUserId },
     } = await axios.post(
-      "http://localhost:3000/api/chatbox/chat",
+      `http://localhost:3000/api/chatbox/chat/${groupId}`,
       { chatText },
       {
         headers: {
@@ -122,3 +130,123 @@ function showChatOnScreen(chat, currentUserId) {
   chatText.innerHTML = `<strong>${chatterName} :</strong> ${chat.chat}`;
   chatBoxMessages.appendChild(chatText);
 }
+
+const logout = document.getElementById("logout");
+logout.addEventListener("click", () => {
+  localStorage.setItem("token", "");
+  // localStorage.removeItem("listOfExpenseToShow");
+  window.location.replace("../login/login.html");
+});
+
+/* GROUP CHAT FUNCTIONS */
+
+const newGroupForm = document.getElementById("newGroupForm");
+
+newGroupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const groupNameEle = document.getElementById("groupName");
+
+  try {
+    const groupName = groupNameEle.value.trim();
+
+    if (!groupName) {
+      groupNameEle.value = "";
+      return alert("speces only, are not allowed");
+    }
+    const {
+      data: { success, createdGroup },
+    } = await axios.post(
+      "http://localhost:3000/api/group/create-group",
+      { groupName: groupNameEle.value },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    if (!success) return alert("something went wrong!");
+
+    groupNameEle.value = "";
+    localStorage.setItem("groupId", createdGroup.id);
+    alert("New Group created Successfully");
+
+    const { data } = await axios.get("http://localhost:3000/api/users", {
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    if (!data.success) return alert("something went wrong!");
+
+    const { allUsers } = data;
+
+    const addMembersToGroupDiv = document.getElementById(
+      "addMembersToGroupDiv"
+    );
+
+    const allMembersArray = [];
+    const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
+
+    const addMemberList = document.createElement("ul");
+    addMemberList.className = "list-group list-unstyled";
+    addMemberList.style.maxHeight = "75vh";
+    addMemberList.style.overflowY = "auto";
+
+    allUsers.forEach((user) => {
+      const addMember = document.createElement("li");
+      addMember.className =
+        "list-group-item list-group-item-warning d-flex justify-content-between align-items-center";
+      addMember.innerHTML = user.id === currentUserId ? "You" : user.fullName;
+
+      const selectMemberBtn = document.createElement("button");
+      selectMemberBtn.className = "btn btn-success";
+
+      if (user.id === currentUserId) {
+        selectMemberBtn.textContent = "Selected";
+        selectMemberBtn.disabled = true;
+      } else selectMemberBtn.textContent = "Select";
+
+      addMember.appendChild(selectMemberBtn);
+
+      selectMemberBtn.addEventListener("click", () => {
+        selectMemberBtn.textContent = "Selected";
+        selectMemberBtn.disabled = true;
+        allMembersArray.push(user.id);
+      });
+      addMemberList.appendChild(addMember);
+    });
+
+    addMembersToGroupDiv.appendChild(addMemberList);
+
+    const addSelectedMemberBtn = document.createElement("button");
+    addSelectedMemberBtn.className = "btn btn-dark m-2";
+    addSelectedMemberBtn.textContent = "Add Selected Members";
+
+    addMembersToGroupDiv.appendChild(addSelectedMemberBtn);
+
+    addSelectedMemberBtn.addEventListener("click", async () => {
+      if (allMembersArray.length <= 0) return alert("select atleat one menber");
+
+      try {
+        const { data } = await axios.post(
+          "http://localhost:3000/api/group/add-users",
+          { groupId: createdGroup.id, userIds: allMembersArray },
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        addMembersToGroupDiv.style.display = "none";
+        alert(data.message);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    document.getElementById("newGroupFormDiv").style.display = "none";
+    addMembersToGroupDiv.style.display = "block";
+  } catch (error) {
+    console.log(error);
+  }
+});

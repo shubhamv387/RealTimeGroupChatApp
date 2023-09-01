@@ -2,11 +2,22 @@ const { Transaction } = require("sequelize");
 const User = require("../model/User");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
+const Group = require("../model/Group");
 
 exports.findAllUsers = async () => {
-  return await User.findAll({
-    attributes: ["id", "fullName", "email", "phone", "createdAt", "updatedAt"],
-  });
+  return await User.findAll(
+    {
+      attributes: [
+        "id",
+        "fullName",
+        "email",
+        "phone",
+        "createdAt",
+        "updatedAt",
+      ],
+    },
+    { include: Group }
+  );
 };
 
 exports.findUserById = async (id) => {

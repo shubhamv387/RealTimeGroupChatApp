@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../src/logo.png" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <!-- Font Awesome cdn -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Create New Group</title>
+    <style>
+      .dropdown-toggle::after {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      onclick="{this.textContent='Added'; this.disabled = true}"
+      class="btn btn-success"
+    >
+      Add
+    </button>
+    <!-- HEADER START -->
+    <div
+      class="container-fluid bg-dark d-flex justify-content-center"
+      style="height: 70px"
+    >
+      <div
+        class="col d-flex justify-content-between align-items-center"
+        style="max-width: 700px"
+      >
+        <h1 class="d-inline p-2 fs-2 bg-dark text-white">
+          <a class="text-white text-decoration-none" href="./groupchat.html"
+            >Group Chat App</a
+          >
+        </h1>
+        <div class="col px-0">
+          <div class="btn-group float-end">
+            <i
+              data-bs-toggle="dropdown"
+              data-bs-auto-close="outside"
+              aria-expanded="false"
+              type="button"
+              class="fa-solid fa-user-large dropdown-toggle d-inline ms-auto fs-5 text-white rounded-circle border border-3 bg-dark border-white p-2"
+              style="cursor: pointer"
+            ></i>
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li>
+                <p id="welcomeText" class="px-3 m-0">Hello, User</p>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  onclick='document.getElementById("newGroupFormDiv").style.display="block";'
+                  >Create New Group</a
+                >
+              </li>
+              <li>
+                <div class="btn-group w-100 dropend">
+                  <span
+                    type="button"
+                    class="dropdown-toggle dropdown-item"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    All Groups
+                  </span>
+                  <ul id="groupList" class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" href="#">Group 1</a></li>
+                    <li><a class="dropdown-item" href="#">Group 2</a></li>
+                    <li><a class="dropdown-item" href="#">Group 3</a></li>
+                  </ul>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li class="d-flex">
+                <button class="btn btn-danger w-100 mx-2" id="logout">
+                  Log Out
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- HEADER END -->
+
+    <!-- CREATE NEW GROUP FORM START -->
+    <div
+      class="container p-4 position-absolute"
+      id="newGroupFormDiv"
+      style="
+        max-width: 500px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+      "
+    >
+      <form
+        id="newGroupForm"
+        class="row g-3 form-control position-relative shadow"
+      >
+        <div class="col">
+          <label for="inputEmail4" class="form-label">Group Name:</label>
+          <input type="email" class="form-control" id="groupName" />
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-success mb-3">
+            Create Group
+          </button>
+        </div>
+        <button
+          onclick='{
+            document.getElementById("newGroupFormDiv").style.display="none";
+          // document.getElementById("newGroupForm").remove();
+        }'
+          id="formClose"
+          class="d-flex w-auto border-0 bg-transparent"
+          style="position: absolute; top: -30px; right: -20px"
+        >
+          <i class="fa-solid fa-circle-xmark d-inline fs-1 text-danger"></i>
+        </button>
+      </form>
+    </div>
+    <!-- CREATE NEW GROUP FORM END -->
+    <script>
+      function hello(e) {
+        console.log(e);
+        e.setAtt;
+      }
+    </script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <!-- <script src="./groupchat.js"></script> -->
+    <!-- AXIOS CDN -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"
+      integrity="sha512-aoTNnqZcT8B4AmeCFmiSnDlc4Nj/KPaZyB5G7JnOnUEkdNpCZs1LCankiYi01sLTyWy+m2P+W4XM+BuQ3Q4/Dg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  </body>
+</html>
