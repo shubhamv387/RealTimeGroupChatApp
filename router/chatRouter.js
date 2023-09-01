@@ -4,7 +4,7 @@ const { authUser } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.get("/", authUser, chatController.getAllChats);
+router.get("/:groupId", authUser, chatController.getAllChats);
 
 router.get("/:chatId/:groupId", authUser, chatController.getLimitedChats);
 

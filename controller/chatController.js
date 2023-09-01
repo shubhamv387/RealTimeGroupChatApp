@@ -3,22 +3,29 @@ const User = require("../model/User");
 const { Op } = require("sequelize");
 
 exports.getAllChats = async (req, res, next) => {
-  const allChats = await Chat.findAll({
-    include: [
-      {
-        model: User,
-        attributes: ["id", "fullName"], // Specify the attributes you want from the User model
-      },
-    ],
-    order: [["id", "DESC"]],
-    limit: 20,
-  });
-  res.status(200).json({
-    success: true,
-    currentUserId: req.user.id,
-    currentUserFullName: req.user.fullName,
-    allChats,
-  });
+  if (req.params.groupId == "null") {
+    return res
+      .status(404)
+      .json({ success: false, message: "Group not Found!" });
+  } else {
+    const allChats = await Chat.findAll({
+      where: { groupId: req.params.groupId },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "fullName"], // Specify the attributes you want from the User model
+        },
+      ],
+      order: [["id", "DESC"]],
+      limit: 20,
+    });
+    res.status(200).json({
+      success: true,
+      currentUserId: req.user.id,
+      currentUserFullName: req.user.fullName,
+      allChats,
+    });
+  }
 };
 
 exports.getLimitedChats = async (req, res, next) => {

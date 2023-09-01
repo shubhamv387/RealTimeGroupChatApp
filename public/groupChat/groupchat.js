@@ -1,80 +1,115 @@
 const chatBoxForm = document.getElementById("chatBoxForm");
 const token = localStorage.getItem("token");
-const groupId = localStorage.getItem("groupId");
+let groupId = localStorage.getItem("groupId");
 let locallySavedChats = [];
 
 window.addEventListener("DOMContentLoaded", async () => {
-  setTimeout(async () => {
-    try {
-      const chatBoxDiv = document.getElementById("chatBoxDiv");
-      const chatBoxMessages = document.getElementById("chatBoxMessages");
-      chatBoxMessages.remove();
+  try {
+    const {
+      data: { success, allChats, currentUserId, currentUserFullName },
+    } = await axios.get(`http://localhost:3000/api/chatbox/${groupId}`, {
+      headers: {
+        Authorization: token,
+      },
+    });
+    if (!success) return alert("Something went wrong!");
 
-      const chatBoxMessage = document.createElement("div");
-      chatBoxMessage.setAttribute("id", "chatBoxMessages");
-      chatBoxDiv.appendChild(chatBoxMessage);
+    document.getElementById("welcomeText").innerHTML = `Hello, ${
+      currentUserFullName.split(" ")[0]
+    }!`;
 
-      locallySavedChats = JSON.parse(localStorage.getItem("locallySavedChats"));
-      const currUserId = JSON.parse(localStorage.getItem("currentUserId"));
+    localStorage.setItem("currentUserId", currentUserId);
 
-      if (!locallySavedChats) locallySavedChats = [];
-      else
-        locallySavedChats.forEach((chat) => {
-          showChatOnScreen(chat, currUserId);
-        });
-      let lastChatId = 0;
-      if (locallySavedChats[locallySavedChats.length - 1])
-        lastChatId = locallySavedChats[locallySavedChats.length - 1].id;
+    if (allChats.length <= 0) {
+      const welcomeMessageOnce = document.createElement("p");
+      welcomeMessageOnce.className = "joined";
+      welcomeMessageOnce.innerHTML = `Welcome to this <strong>Group Chat App</strong>`;
+      chatBoxMessages.appendChild(welcomeMessageOnce);
+    } else {
+      const welcomeMessageOnce = document.createElement("p");
+      welcomeMessageOnce.className = "joined";
+      welcomeMessageOnce.innerHTML = `Welcome to this <strong>Group Chat App</strong>`;
+      chatBoxMessages.appendChild(welcomeMessageOnce);
 
-      const {
-        data: { success, allChats, currentUserId, currentUserFullName },
-      } = await axios.get(
-        `http://localhost:3000/api/chatbox/${lastChatId}/${groupId}`,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      document.getElementById("welcomeText").innerHTML = `Hello, ${
-        currentUserFullName.split(" ")[0]
-      }!`;
-
-      if (!success) return alert("Something went wrong!");
-
-      localStorage.setItem("currentUserId", currentUserId);
-      if (allChats.length <= 0) {
-        // const chatBoxMessages = document.getElementById("chatBoxMessages");
-        // const chatText = document.createElement("p");
-        // chatText.className = "joined";
-        // chatText.innerHTML = `<strong>You</strong> joined the chat`;
-        // chatBoxMessages.appendChild(chatText);
-      } else {
-        for (let i = allChats.length - 1; i >= 0; i--) {
-          showChatOnScreen(allChats[i], currentUserId);
-          if (locallySavedChats.length >= 20) {
-            locallySavedChats.shift();
-            locallySavedChats.push(allChats[i]);
-          } else locallySavedChats.push(allChats[i]);
-        }
-
-        localStorage.setItem(
-          "locallySavedChats",
-          JSON.stringify(locallySavedChats)
-        );
-
-        const chatterName = document.createElement("p");
-        chatterName.className = "joined";
-        chatterName.innerHTML = `<strong>You</strong> joined the chat`;
-        chatBoxMessages.appendChild(chatterName);
+      for (let i = allChats.length - 1; i >= 0; i--) {
+        showChatOnScreen(allChats[i], currentUserId);
+        locallySavedChats.push(allChats[i]);
       }
-    } catch (error) {
-      alert("Something went wrong!");
-      console.log(error);
-      // window.location.replace("../login/login.html");
+
+      localStorage.setItem(
+        "locallySavedChats",
+        JSON.stringify(locallySavedChats)
+      );
     }
-  }, 1000);
+  } catch (error) {
+    if (!error.response.data.success)
+      return alert("Create New Group to start Chat!");
+    alert("Something went wrong!");
+    console.log(error);
+    // window.location.replace("../login/login.html");
+  }
 });
+
+// setInterval(reloadMessages, 1000);
+async function reloadMessages() {
+  try {
+    // const chatBoxDiv = document.getElementById("chatBoxDiv");
+    // const chatBoxMessages = document.getElementById("chatBoxMessages");
+    // chatBoxMessages.remove();
+
+    // const chatBoxMessage = document.createElement("div");
+    // chatBoxMessage.setAttribute("id", "chatBoxMessages");
+    // chatBoxDiv.appendChild(chatBoxMessage);
+
+    locallySavedChats = JSON.parse(localStorage.getItem("locallySavedChats"));
+    // const currUserId = JSON.parse(localStorage.getItem("currentUserId"));
+
+    let lastChatId = 0;
+    if (locallySavedChats[locallySavedChats.length - 1])
+      lastChatId = locallySavedChats[locallySavedChats.length - 1].id;
+
+    const {
+      data: { success, allChats, currentUserId, currentUserFullName },
+    } = await axios.get(
+      `http://localhost:3000/api/chatbox/${lastChatId}/${groupId}`,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    document.getElementById("welcomeText").innerHTML = `Hello, ${
+      currentUserFullName.split(" ")[0]
+    }!`;
+
+    if (!success) return alert("Something went wrong!");
+
+    localStorage.setItem("currentUserId", currentUserId);
+    if (allChats.length > 0) {
+      for (let i = allChats.length - 1; i >= 0; i--) {
+        showChatOnScreen(allChats[i], currentUserId);
+        if (locallySavedChats.length >= 20) {
+          locallySavedChats.shift();
+          locallySavedChats.push(allChats[i]);
+        } else locallySavedChats.push(allChats[i]);
+      }
+
+      localStorage.setItem(
+        "locallySavedChats",
+        JSON.stringify(locallySavedChats)
+      );
+
+      // const chatterName = document.createElement("p");
+      // chatterName.className = "joined";
+      // chatterName.innerHTML = `<strong>You</strong> joined the chat`;
+      // chatBoxMessages.appendChild(chatterName);
+    }
+  } catch (error) {
+    alert("Something went wrong!");
+    console.log(error);
+    // window.location.replace("../login/login.html");
+  }
+}
 
 chatBoxForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -110,7 +145,7 @@ chatBoxForm.addEventListener("submit", async (e) => {
         JSON.stringify(locallySavedChats)
       );
       chatTextEle.value = "";
-    }
+    } else alert("something went wrong!");
   } catch (error) {
     console.log(error);
   }
@@ -133,7 +168,9 @@ function showChatOnScreen(chat, currentUserId) {
 
 const logout = document.getElementById("logout");
 logout.addEventListener("click", () => {
-  localStorage.setItem("token", "");
+  localStorage.removeItem("token");
+  localStorage.removeItem("currentUserId");
+  localStorage.removeItem("groupId");
   // localStorage.removeItem("listOfExpenseToShow");
   window.location.replace("../login/login.html");
 });
@@ -168,6 +205,7 @@ newGroupForm.addEventListener("submit", async (e) => {
 
     groupNameEle.value = "";
     localStorage.setItem("groupId", createdGroup.id);
+    groupId = createdGroup.id;
     alert("New Group created Successfully");
 
     const { data } = await axios.get("http://localhost:3000/api/users", {
@@ -239,6 +277,19 @@ newGroupForm.addEventListener("submit", async (e) => {
         );
         addMembersToGroupDiv.style.display = "none";
         alert(data.message);
+
+        const chatBoxDiv = document.getElementById("chatBoxDiv");
+        const chatBoxMessages = document.getElementById("chatBoxMessages");
+        chatBoxMessages.remove();
+
+        const chatBoxMessage = document.createElement("div");
+        chatBoxMessage.setAttribute("id", "chatBoxMessages");
+        chatBoxDiv.appendChild(chatBoxMessage);
+
+        const welcomeMessageOnce = document.createElement("p");
+        welcomeMessageOnce.className = "joined";
+        welcomeMessageOnce.innerHTML = `Welcome to this <strong>Group Chat App</strong>`;
+        chatBoxMessage.appendChild(welcomeMessageOnce);
       } catch (error) {
         console.log(error);
       }
