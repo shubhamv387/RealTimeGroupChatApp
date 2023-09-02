@@ -62,10 +62,10 @@ exports.addUsersToGroup = async (req, res, next) => {
 
 exports.getAllGroups = async (req, res, next) => {
   try {
-    const groups = await Group.findAll({
+    const { groups } = await User.findOne({
+      where: { id: req.user.id },
       include: {
-        model: User,
-        attributes: { exclude: ["password"] },
+        model: Group,
       },
     });
 

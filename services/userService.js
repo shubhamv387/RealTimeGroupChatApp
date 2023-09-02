@@ -1,4 +1,3 @@
-const { Transaction } = require("sequelize");
 const User = require("../model/User");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
@@ -22,13 +21,10 @@ exports.findAllUsers = async () => {
 
 exports.findUserById = async (id) => {
   try {
-    const user = await User.findOne(
-      { where: { id } },
-      {
-        attributes: { exclude: ["password"] },
-      },
-      { where: { id } }
-    );
+    const user = await User.findOne({
+      where: { id },
+      attributes: { exclude: ["password"] },
+    });
     if (user) return { success: true, user: user };
     return { success: false, message: `user not found with Id: ${id}` };
   } catch (error) {

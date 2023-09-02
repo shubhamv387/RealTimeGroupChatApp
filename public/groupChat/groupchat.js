@@ -5,6 +5,9 @@ let locallySavedChats = [];
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
+    const { newSuccess, message } = await findAllGroupsOfThisUser();
+    if (!newSuccess) return alert(message);
+
     const {
       data: { success, allChats, currentUserId, currentUserFullName },
     } = await axios.get(`http://localhost:3000/api/chatbox/${groupId}`, {
@@ -42,15 +45,51 @@ window.addEventListener("DOMContentLoaded", async () => {
       );
     }
   } catch (error) {
-    if (!error.response.data.success)
-      return alert("Create New Group to start Chat!");
+    if (error.response) return alert(error.response.data.message);
     alert("Something went wrong!");
     console.log(error);
     // window.location.replace("../login/login.html");
   }
 });
 
-// setInterval(reloadMessages, 1000);
+async function findAllGroupsOfThisUser() {
+  try {
+    const {
+      data: { success, groups },
+    } = await axios("http://localhost:3000/api/group", {
+      headers: {
+        Authorization: token,
+      },
+    });
+    if (!success) return alert("something went wrong in finding groups!");
+
+    const groupList = document.getElementById("groupList");
+
+    if (groups.length <= 0)
+      return {
+        newSuccess: false,
+        message: "you are not a member in any groups, Create one!",
+      };
+
+    groups.forEach((group) => {
+      const groupListItem = document.createElement("li");
+      groupListItem.innerHTML = `<a class="dropdown-item" href='#' 
+      onclick='switchGroup(${group.id})'>
+      ${group.groupName}
+    </a>`;
+      groupList.appendChild(groupListItem);
+    });
+    return { newSuccess: true };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function switchGroup(groupId) {
+  localStorage.setItem("groupId", groupId);
+  window.location.reload();
+}
+// setInterval(reloadMessages, 1000); // do not delete this line
 async function reloadMessages() {
   try {
     // const chatBoxDiv = document.getElementById("chatBoxDiv");
@@ -147,6 +186,7 @@ chatBoxForm.addEventListener("submit", async (e) => {
       chatTextEle.value = "";
     } else alert("something went wrong!");
   } catch (error) {
+    if (error.response) alert(error.response.data.message);
     console.log(error);
   }
 });
@@ -170,7 +210,6 @@ const logout = document.getElementById("logout");
 logout.addEventListener("click", () => {
   localStorage.removeItem("token");
   localStorage.removeItem("currentUserId");
-  localStorage.removeItem("groupId");
   // localStorage.removeItem("listOfExpenseToShow");
   window.location.replace("../login/login.html");
 });
