@@ -85,3 +85,15 @@ exports.deleteMemberFromGroup = async (req, res, next) => {
   await group.destroy();
   res.status(200).json({ success: true, message: "deleting the user!" });
 };
+
+exports.deleteGroup = async (req, res, next) => {
+  const { groupId } = req.params;
+  const group = await Group.findOne({ where: { id: groupId } });
+  if (!group)
+    return res
+      .status(400)
+      .json({ success: false, message: "Group does not exists!" });
+
+  await group.destroy();
+  res.status(200).json({ success: true, message: "group deleted!" });
+};

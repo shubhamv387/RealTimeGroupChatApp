@@ -34,6 +34,10 @@ exports.getAllChats = async (req, res, next) => {
         model: User,
         attributes: ["id", "fullName"],
       },
+      {
+        model: Group,
+        attributes: ["id", "groupName"],
+      },
     ],
     order: [["id", "DESC"]],
     limit: 20,

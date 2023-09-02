@@ -243,15 +243,29 @@
 
     <div
       id="otherDivs"
-      class="d-flex flex-column justify-content-between"
+      class="d-flex flex-column justify-content-between align-items-center"
       style="height: calc(100vh - 70px)"
     >
+      <div
+        class="container form-control border-0 mt-3 px-3 py-2 d-flex align-items-center justify-content-between"
+        style="max-width: 700px; width: 95vw; background: mediumblue"
+      >
+        <div class="text-white">
+          <strong>Group Name:</strong>
+          <span id="currentGroupName"></span>
+        </div>
+        <button id="currentGroupInfo" class="btn btn-outline-light">
+          Group Info
+        </button>
+      </div>
       <!-- CHAT MESSAGE SECTION START -->
-      <div class="p-3" style="height: calc(100vh - 140px)">
+      <div
+        class="py-3"
+        style="height: calc(100vh - 140px); max-width: 700px; width: 95vw"
+      >
         <div
           id="chatBoxDiv"
           class="container form-control w-100 bg-light px-3 h-100"
-          style="max-width: 700px"
         >
           <div id="chatBoxMessages">
             <!-- <p class="joined"><strong>You</strong> Joined the chat!</p> -->

@@ -23,6 +23,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }!`;
 
     localStorage.setItem("currentUserId", currentUserId);
+    console.log(allChats);
 
     if (allChats.length <= 0) {
       const welcomeMessageOnce = document.createElement("p");
@@ -34,6 +35,16 @@ window.addEventListener("DOMContentLoaded", async () => {
       welcomeMessageOnce.className = "joined";
       welcomeMessageOnce.innerHTML = `Welcome to this <strong>Group Chat App</strong>`;
       chatBoxMessages.appendChild(welcomeMessageOnce);
+
+      document.getElementById("currentGroupName").textContent =
+        allChats[0].group.groupName;
+      document
+        .getElementById("currentGroupInfo")
+        .addEventListener("click", () => {
+          localStorage.setItem("currentGroupName", allChats[0].group.groupName);
+          localStorage.setItem("currentGroupId", allChats[0].group.id);
+          window.location.href = "./groupinfo.html";
+        });
 
       for (let i = allChats.length - 1; i >= 0; i--) {
         showChatOnScreen(allChats[i], currentUserId);
