@@ -10,4 +10,10 @@ router.post("/add-users", authUser, groupController.addUsersToGroup);
 
 router.get("/", authUser, groupController.getAllGroups);
 
+router.delete(
+  "/:groupId/:userId",
+  authUser,
+  groupController.deleteMemberFromGroup
+);
+
 module.exports = router;

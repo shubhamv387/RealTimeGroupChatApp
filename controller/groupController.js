@@ -74,3 +74,14 @@ exports.getAllGroups = async (req, res, next) => {
     console.log(error);
   }
 };
+
+exports.deleteMemberFromGroup = async (req, res, next) => {
+  const { groupId, userId } = req.params;
+  const group = await GroupUser.findOne({ where: { groupId, userId } });
+  if (!group)
+    return res
+      .status(400)
+      .json({ success: false, message: "user is already not in this group!" });
+  await group.destroy();
+  res.status(200).json({ success: true, message: "deleting the user!" });
+};
