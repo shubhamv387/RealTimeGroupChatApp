@@ -6,6 +6,7 @@ let locallySavedChats = [];
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     const { newSuccess, message } = await findAllGroupsOfThisUser();
+
     if (!newSuccess) return alert(message);
 
     const {
@@ -45,7 +46,10 @@ window.addEventListener("DOMContentLoaded", async () => {
       );
     }
   } catch (error) {
-    if (error.response) return alert(error.response.data.message);
+    if (error.response) {
+      console.log(error);
+      return alert(error.response.data.message);
+    }
     alert("Something went wrong!");
     console.log(error);
     // window.location.replace("../login/login.html");
@@ -55,13 +59,15 @@ window.addEventListener("DOMContentLoaded", async () => {
 async function findAllGroupsOfThisUser() {
   try {
     const {
-      data: { success, groups },
+      data: { success, groups, currentUserId },
     } = await axios("http://localhost:3000/api/group", {
       headers: {
         Authorization: token,
       },
     });
     if (!success) return alert("something went wrong in finding groups!");
+
+    localStorage.setItem("currentUserId", currentUserId);
 
     const groupList = document.getElementById("groupList");
 
@@ -74,11 +80,20 @@ async function findAllGroupsOfThisUser() {
     groups.forEach((group) => {
       const groupListItem = document.createElement("li");
       groupListItem.innerHTML = `<a class="dropdown-item" href='#' 
-      onclick='switchGroup(${group.id})'>
-      ${group.groupName}
-    </a>`;
+        onclick='switchGroup(${group.id})'>
+        ${group.groupName}
+      </a>`;
+
+      if (group.groupAdminId == currentUserId) {
+        groupListItem.innerHTML = `<a class="dropdown-item d-flex justify-content-between" href='#' 
+        onclick='switchGroup(${group.id})'>
+        ${group.groupName}
+        <span class="text-secondary ms-2">admin</span></a>`;
+      }
+
       groupList.appendChild(groupListItem);
     });
+
     return { newSuccess: true };
   } catch (error) {
     console.log(error);
@@ -89,6 +104,7 @@ function switchGroup(groupId) {
   localStorage.setItem("groupId", groupId);
   window.location.reload();
 }
+
 // setInterval(reloadMessages, 1000); // do not delete this line
 async function reloadMessages() {
   try {
@@ -245,6 +261,18 @@ newGroupForm.addEventListener("submit", async (e) => {
     groupNameEle.value = "";
     localStorage.setItem("groupId", createdGroup.id);
     groupId = createdGroup.id;
+
+    const groupList = document.getElementById("groupList");
+    const groupListItem = document.createElement("li");
+
+    groupListItem.innerHTML = `<a class="dropdown-item d-flex justify-content-between" href='#' 
+        onclick='switchGroup(${createdGroup.id})'>
+        ${createdGroup.groupName}
+        <span class="text-secondary ms-2">admin</span>
+      </a>`;
+
+    groupList.appendChild(groupListItem);
+
     alert("New Group created Successfully");
 
     const { data } = await axios.get("http://localhost:3000/api/users", {

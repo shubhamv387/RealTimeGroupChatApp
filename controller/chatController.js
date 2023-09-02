@@ -9,7 +9,7 @@ exports.getAllChats = async (req, res, next) => {
   if (groupId == "null") {
     return res
       .status(404)
-      .json({ success: false, message: "Group not Found!" });
+      .json({ success: false, message: "Open Your Group to Start Chat!" });
   }
 
   const isGroupExistWithThisId = await Group.findByPk(req.params.groupId);

@@ -66,10 +66,10 @@ exports.getAllGroups = async (req, res, next) => {
       where: { id: req.user.id },
       include: {
         model: Group,
+        order: ["groupAdminId", "ASC"],
       },
     });
-
-    res.status(201).json({ success: true, groups });
+    res.status(200).json({ success: true, groups, currentUserId: req.user.id });
   } catch (error) {
     console.log(error);
   }
