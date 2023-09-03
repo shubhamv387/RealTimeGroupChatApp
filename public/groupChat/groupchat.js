@@ -10,7 +10,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (!newSuccess) return alert(message);
 
     const {
-      data: { success, allChats, currentUserId, currentUserFullName },
+      data: {
+        success,
+        allChats,
+        currentUserId,
+        currentUserFullName,
+        GroupWithThisId,
+      },
     } = await axios.get(`http://localhost:3000/api/chatbox/${groupId}`, {
       headers: {
         Authorization: token,
@@ -23,8 +29,18 @@ window.addEventListener("DOMContentLoaded", async () => {
     }!`;
 
     localStorage.setItem("currentUserId", currentUserId);
-    console.log(allChats);
 
+    // setting the group name and group info btn
+    document.getElementById("currentGroupName").textContent =
+      GroupWithThisId.groupName;
+    document
+      .getElementById("currentGroupInfo")
+      .addEventListener("click", () => {
+        localStorage.setItem("currentGroupId", GroupWithThisId.id);
+        window.location.href = "./groupinfo.html";
+      });
+
+    // getting all chats from this group
     if (allChats.length <= 0) {
       const welcomeMessageOnce = document.createElement("p");
       welcomeMessageOnce.className = "joined";
@@ -35,16 +51,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       welcomeMessageOnce.className = "joined";
       welcomeMessageOnce.innerHTML = `Welcome to this <strong>Group Chat App</strong>`;
       chatBoxMessages.appendChild(welcomeMessageOnce);
-
-      document.getElementById("currentGroupName").textContent =
-        allChats[0].group.groupName;
-      document
-        .getElementById("currentGroupInfo")
-        .addEventListener("click", () => {
-          localStorage.setItem("currentGroupName", allChats[0].group.groupName);
-          localStorage.setItem("currentGroupId", allChats[0].group.id);
-          window.location.href = "./groupinfo.html";
-        });
 
       for (let i = allChats.length - 1; i >= 0; i--) {
         showChatOnScreen(allChats[i], currentUserId);
@@ -173,7 +179,7 @@ async function reloadMessages() {
   } catch (error) {
     alert("Something went wrong!");
     console.log(error);
-    // window.location.replace("../login/login.html");
+    window.location.replace("../login/login.html");
   }
 }
 
@@ -231,6 +237,7 @@ function showChatOnScreen(chat, currentUserId) {
   }
   chatText.innerHTML = `<strong>${chatterName} :</strong> ${chat.chat}`;
   chatBoxMessages.appendChild(chatText);
+  chatText.scrollIntoView();
 }
 
 const logout = document.getElementById("logout");
@@ -284,7 +291,7 @@ newGroupForm.addEventListener("submit", async (e) => {
 
     groupList.appendChild(groupListItem);
 
-    alert("New Group created Successfully");
+    alert("New Group created Successfully!");
 
     const { data } = await axios.get("http://localhost:3000/api/users", {
       headers: {
@@ -356,20 +363,7 @@ newGroupForm.addEventListener("submit", async (e) => {
         addMembersToGroupDiv.style.display = "none";
         alert(data.message);
 
-        document.getElementById("otherDivs").style.pointerEvents = "all";
-
-        const chatBoxDiv = document.getElementById("chatBoxDiv");
-        const chatBoxMessages = document.getElementById("chatBoxMessages");
-        chatBoxMessages.remove();
-
-        const chatBoxMessage = document.createElement("div");
-        chatBoxMessage.setAttribute("id", "chatBoxMessages");
-        chatBoxDiv.appendChild(chatBoxMessage);
-
-        const welcomeMessageOnce = document.createElement("p");
-        welcomeMessageOnce.className = "joined";
-        welcomeMessageOnce.innerHTML = `Welcome to this <strong>Group Chat App</strong>`;
-        chatBoxMessage.appendChild(welcomeMessageOnce);
+        window.location.reload();
       } catch (error) {
         console.log(error);
       }

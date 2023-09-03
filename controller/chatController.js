@@ -12,9 +12,9 @@ exports.getAllChats = async (req, res, next) => {
       .json({ success: false, message: "Open Your Group to Start Chat!" });
   }
 
-  const isGroupExistWithThisId = await Group.findByPk(req.params.groupId);
+  const GroupWithThisId = await Group.findByPk(req.params.groupId);
 
-  if (!isGroupExistWithThisId)
+  if (!GroupWithThisId)
     return res
       .status(404)
       .json({ success: false, message: "Group not Found!" });
@@ -34,10 +34,6 @@ exports.getAllChats = async (req, res, next) => {
         model: User,
         attributes: ["id", "fullName"],
       },
-      {
-        model: Group,
-        attributes: ["id", "groupName"],
-      },
     ],
     order: [["id", "DESC"]],
     limit: 20,
@@ -48,6 +44,7 @@ exports.getAllChats = async (req, res, next) => {
     currentUserId: req.user.id,
     currentUserFullName: req.user.fullName,
     allChats,
+    GroupWithThisId,
   });
 };
 

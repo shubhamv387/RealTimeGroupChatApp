@@ -1,6 +1,9 @@
 const Group = require("../model/Group");
 const User = require("../model/User");
 const GroupUser = require("../model/GroupUser");
+const { findGroupById } = require("../services/groupServices");
+const { Op } = require("sequelize");
+const sequelize = require("../config/database");
 
 exports.createGroup = async (req, res, next) => {
   const { groupName } = req.body;
@@ -96,4 +99,35 @@ exports.deleteGroup = async (req, res, next) => {
 
   await group.destroy();
   res.status(200).json({ success: true, message: "group deleted!" });
+};
+
+exports.getSingleGroup = async (req, res, next) => {
+  const groupData = await findGroupById(req.params.groupId);
+  if (!groupData.success) return res.status(404).json(groupData);
+
+  res.status(200).json(groupData);
+};
+
+exports.getUsersNotInThisGroup = async (req, res, next) => {
+  const { groupId } = req.params;
+
+  try {
+    const users = await User.findAll({
+      where: {
+        id: {
+          [Op.notIn]: [
+            sequelize.literal(
+              `SELECT userId FROM GroupUsers WHERE groupId = ${groupId}`
+            ),
+          ],
+        },
+      },
+      attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+    });
+
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 };

@@ -22,7 +22,111 @@
     <title>Current Group Info</title>
   </head>
   <body>
-    <h1>Current Group Info</h1>
+    <!-- HEADER START -->
+    <div
+      class="container-fluid bg-dark d-flex justify-content-center"
+      style="height: 70px"
+    >
+      <div
+        id="headerDiv"
+        class="col d-flex justify-content-between align-items-center"
+        style="max-width: 700px"
+      >
+        <button
+          onclick="{
+            localStorage.removeItem('currentGroupId');
+            document.getElementById('groupMemberListDiv') && document.getElementById('groupMemberListDiv').remove();
+            window.location.replace('./groupchat.html');
+            }"
+          class="btn btn-outline-light"
+        >
+          <i class="fa fa-arrow-left me-1"></i>
+          Go Back
+        </button>
+        <h5
+          id="groupName"
+          class="d-inline mb-0 mx-auto bg-dark text-white flex-grow-1 ms-3"
+        ></h5>
+      </div>
+    </div>
+    <!-- HEADER END -->
+
+    <!-- ALL MEMBER LIST OF THIS GROUP START -->
+    <div id="groupMemberListDiv">
+      <div
+        id="groupMemberListDiv"
+        class="container-fluid d-flex flex-column justify-content-center align-items-center my-3 mx-0"
+      >
+        <div
+          class="py-3 w-100 mt-2 d-flex align-items-center justify-content-center text-white"
+          style="
+            max-width: 700px;
+            background: mediumblue;
+            border-radius: 5px 5px 0 0;
+          "
+        >
+          <h5 class="mb-0">Group Members</h5>
+        </div>
+
+        <ul
+          id="groupMemberList"
+          name="groupMemberList"
+          class="list-unstyled list-group w-100"
+          style="max-width: 700px"
+        >
+          <!-- <li
+          class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center"
+        >
+          <span>1. Shubham Kumar Vishwakarma</span>
+          <div>
+            <button class="btn btn-success btn-sm">Make Admin</button>
+            <button class="btn btn-danger btn-sm">
+              <i class="fa fa-x"></i>
+            </button>
+          </div>
+        </li> -->
+        </ul>
+      </div>
+    </div>
+    <!-- ALL MEMBER LIST OF THIS GROUP END -->
+
+    <!-- ALL MEMBER LIST START -->
+    <div id="allMemberListDiv" style="display: none">
+      <div
+        class="container-fluid d-flex flex-column justify-content-center align-items-center my-3 mx-0"
+      >
+        <div
+          class="py-3 w-100 mt-2 d-flex align-items-center justify-content-center text-white"
+          style="
+            max-width: 700px;
+            background: mediumblue;
+            border-radius: 5px 5px 0 0;
+          "
+        >
+          <h5 class="mb-0">All Members</h5>
+        </div>
+
+        <ul
+          id="allMemberList"
+          name="allMemberList"
+          class="list-unstyled list-group w-100"
+          style="max-width: 700px"
+        >
+          <!-- <li
+          class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center"
+        >
+          <span>1. Shubham Kumar Vishwakarma</span>
+          <div>
+            <button class="btn btn-success btn-sm">Make Admin</button>
+            <button class="btn btn-danger btn-sm">
+              <i class="fa fa-x"></i>
+            </button>
+          </div>
+        </li> -->
+        </ul>
+      </div>
+    </div>
+    <!-- ALL MEMBER LIST END -->
     <!-- Bootstrap Bundle with Popper -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

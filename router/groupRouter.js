@@ -11,6 +11,8 @@ router.post("/add-users", authUser, groupController.addUsersToGroup);
 
 router.get("/", authUser, groupController.getAllGroups);
 
+router.get("/:groupId", authUser, groupController.getSingleGroup);
+
 router.delete(
   "/:groupId/:userId",
   authUser,
@@ -19,5 +21,12 @@ router.delete(
 );
 
 router.delete("/:groupId", authUser, isGroupAdmin, groupController.deleteGroup);
+
+router.get(
+  "/all-users/:groupId",
+  authUser,
+  isGroupAdmin,
+  groupController.getUsersNotInThisGroup
+);
 
 module.exports = router;
