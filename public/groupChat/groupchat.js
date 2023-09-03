@@ -69,7 +69,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
     alert("Something went wrong!");
     console.log(error);
-    // window.location.replace("../login/login.html");
+    window.location.replace("../login/login.html");
   }
 });
 
@@ -122,7 +122,7 @@ function switchGroup(groupId) {
   window.location.reload();
 }
 
-// setInterval(reloadMessages, 1000); // do not delete this line
+setInterval(reloadMessages, 1000); // do not delete this line
 async function reloadMessages() {
   try {
     // const chatBoxDiv = document.getElementById("chatBoxDiv");
