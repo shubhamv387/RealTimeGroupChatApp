@@ -6,11 +6,11 @@ const { isGroupMember } = require("../middleware/groupMemberMiddleware");
 
 const router = express.Router();
 
+router.get("/", authUser, groupController.getUserAllGroups);
+
 router.post("/create-group", authUser, groupController.createGroup);
 
 router.post("/add-users", authUser, groupController.addUsersToGroup);
-
-router.get("/", authUser, groupController.getAllGroups);
 
 router.get(
   "/:groupId",

@@ -5,6 +5,21 @@ const { findGroupById } = require("../services/groupServices");
 const { Op } = require("sequelize");
 const sequelize = require("../config/database");
 
+exports.getUserAllGroups = async (req, res, next) => {
+  try {
+    const { groups } = await User.findOne({
+      where: { id: req.user.id },
+      include: {
+        model: Group,
+        order: ["groupAdminId", "ASC"],
+      },
+    });
+    res.status(200).json({ success: true, groups, currentUserId: req.user.id });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 exports.createGroup = async (req, res, next) => {
   const { groupName } = req.body;
   try {
@@ -61,21 +76,6 @@ exports.addUsersToGroup = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal server error" });
-  }
-};
-
-exports.getAllGroups = async (req, res, next) => {
-  try {
-    const { groups } = await User.findOne({
-      where: { id: req.user.id },
-      include: {
-        model: Group,
-        order: ["groupAdminId", "ASC"],
-      },
-    });
-    res.status(200).json({ success: true, groups, currentUserId: req.user.id });
-  } catch (error) {
-    console.log(error);
   }
 };
 

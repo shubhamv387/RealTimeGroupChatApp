@@ -118,9 +118,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                   }
                 );
                 if (!data.success) return alert("something went wrong!");
-                alert(
-                  "New admin asigned to this group! reload to see the changes"
-                );
+                alert(`${member.fullName} is no longer admin for this group!`);
               } catch (error) {
                 console.log(error);
                 return;
@@ -150,7 +148,7 @@ window.addEventListener("DOMContentLoaded", async () => {
               );
               if (!data.success) return alert("something went wrong!");
               alert(
-                "New admin asigned to this group! reload to see the changes"
+                `${member.fullName} is asigned as a New admin to this group!`
               );
             } catch (error) {
               console.log(error);
@@ -243,9 +241,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
               selectMemberBtn.textContent = "ADDED";
               selectMemberBtn.disabled = true;
-              alert(
-                "Users added to the group successfully! Reload to see the changes!"
-              );
+              alert("Users added to the group successfully!!");
             } catch (error) {
               console.log(error);
             }

@@ -1,7 +1,6 @@
 const chatBoxForm = document.getElementById("chatBoxForm");
 const token = localStorage.getItem("token");
 let groupId = localStorage.getItem("groupId");
-let locallySavedChats = [];
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -33,6 +32,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     // setting the group name and group info btn
     document.getElementById("currentGroupName").textContent =
       GroupWithThisId.groupName;
+
+    // GEOUP INFO BUTTON ON CLICK
     document
       .getElementById("currentGroupInfo")
       .addEventListener("click", () => {
@@ -40,7 +41,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         window.location.href = "./groupinfo.html";
       });
 
-    // getting all chats from this group
+    // getting all chats of this group
     if (allChats.length <= 0) {
       const welcomeMessageOnce = document.createElement("p");
       welcomeMessageOnce.className = "joined";
@@ -54,13 +55,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       for (let i = allChats.length - 1; i >= 0; i--) {
         showChatOnScreen(allChats[i], currentUserId);
-        locallySavedChats.push(allChats[i]);
+        if (i === 0) localStorage.setItem("lastChatId", allChats[i].id);
       }
-
-      localStorage.setItem(
-        "locallySavedChats",
-        JSON.stringify(locallySavedChats)
-      );
     }
   } catch (error) {
     if (error.response) {
@@ -125,25 +121,14 @@ function switchGroup(groupId) {
 // setInterval(reloadMessages, 1000); // do not delete this line
 async function reloadMessages() {
   try {
-    // const chatBoxDiv = document.getElementById("chatBoxDiv");
-    // const chatBoxMessages = document.getElementById("chatBoxMessages");
-    // chatBoxMessages.remove();
-
-    // const chatBoxMessage = document.createElement("div");
-    // chatBoxMessage.setAttribute("id", "chatBoxMessages");
-    // chatBoxDiv.appendChild(chatBoxMessage);
-
-    locallySavedChats = JSON.parse(localStorage.getItem("locallySavedChats"));
-    // const currUserId = JSON.parse(localStorage.getItem("currentUserId"));
-
-    let lastChatId = 0;
-    if (locallySavedChats[locallySavedChats.length - 1])
-      lastChatId = locallySavedChats[locallySavedChats.length - 1].id;
+    const locallySavedLastChatId = JSON.parse(
+      localStorage.getItem("lastChatId")
+    );
 
     const {
       data: { success, allChats, currentUserId, currentUserFullName },
     } = await axios.get(
-      `http://localhost:3000/api/chatbox/${lastChatId}/${groupId}`,
+      `http://localhost:3000/api/chatbox/${locallySavedLastChatId}/${groupId}`,
       {
         headers: {
           Authorization: token,
@@ -160,16 +145,8 @@ async function reloadMessages() {
     if (allChats.length > 0) {
       for (let i = allChats.length - 1; i >= 0; i--) {
         showChatOnScreen(allChats[i], currentUserId);
-        if (locallySavedChats.length >= 20) {
-          locallySavedChats.shift();
-          locallySavedChats.push(allChats[i]);
-        } else locallySavedChats.push(allChats[i]);
+        if (i === 0) localStorage.setItem("lastChatId", allChats[i].id);
       }
-
-      localStorage.setItem(
-        "locallySavedChats",
-        JSON.stringify(locallySavedChats)
-      );
 
       // const chatterName = document.createElement("p");
       // chatterName.className = "joined";
@@ -208,14 +185,9 @@ chatBoxForm.addEventListener("submit", async (e) => {
     );
     if (success) {
       showChatOnScreen(createdChat, currentUserId);
-      if (locallySavedChats.length >= 20) {
-        locallySavedChats.shift();
-        locallySavedChats.push(createdChat);
-      } else locallySavedChats.push(createdChat);
-      localStorage.setItem(
-        "locallySavedChats",
-        JSON.stringify(locallySavedChats)
-      );
+
+      localStorage.setItem("lastChatId", createdChat.id);
+
       chatTextEle.value = "";
     } else alert("something went wrong!");
   } catch (error) {
@@ -244,7 +216,6 @@ const logout = document.getElementById("logout");
 logout.addEventListener("click", () => {
   localStorage.removeItem("token");
   localStorage.removeItem("currentUserId");
-  // localStorage.removeItem("listOfExpenseToShow");
   window.location.replace("../login/login.html");
 });
 
