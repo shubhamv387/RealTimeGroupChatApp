@@ -51,6 +51,7 @@ exports.addUsersToGroup = async (req, res, next) => {
       await GroupUser.create({
         userId: user.id,
         groupId: group.id,
+        isGroupAdmin: false,
       });
     }
 
@@ -130,4 +131,15 @@ exports.getUsersNotInThisGroup = async (req, res, next) => {
     console.error(error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
+};
+
+exports.makeNewAdminToTheGroup = async (req, res, next) => {
+  const { groupId, userId } = req.params;
+  await GroupUser.update(req.body, {
+    where: { groupId, userId },
+  });
+  res.status(200).json({
+    success: true,
+    message: "making user to admin of this group",
+  });
 };
