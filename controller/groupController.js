@@ -14,7 +14,14 @@ exports.getUserAllGroups = async (req, res, next) => {
         order: ["groupAdminId", "ASC"],
       },
     });
-    res.status(200).json({ success: true, groups, currentUserId: req.user.id });
+    res
+      .status(200)
+      .json({
+        success: true,
+        groups,
+        currentUserId: req.user.id,
+        currentUserName: req.user.fullName,
+      });
   } catch (error) {
     console.log(error);
   }

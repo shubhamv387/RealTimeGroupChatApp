@@ -1,6 +1,8 @@
+const socket = io();
 const chatBoxForm = document.getElementById("chatBoxForm");
 const token = localStorage.getItem("token");
 let groupId = localStorage.getItem("groupId");
+let connected = false;
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -42,22 +44,56 @@ window.addEventListener("DOMContentLoaded", async () => {
       });
 
     // getting all chats of this group
-    if (allChats.length <= 0) {
-      const welcomeMessageOnce = document.createElement("p");
-      welcomeMessageOnce.className = "joined";
-      welcomeMessageOnce.innerHTML = `Welcome to this <strong>Group Chat App</strong>`;
-      chatBoxMessages.appendChild(welcomeMessageOnce);
-    } else {
-      const welcomeMessageOnce = document.createElement("p");
-      welcomeMessageOnce.className = "joined";
-      welcomeMessageOnce.innerHTML = `Welcome to this <strong>Group Chat App</strong>`;
-      chatBoxMessages.appendChild(welcomeMessageOnce);
-
+    if (allChats.length > 0) {
       for (let i = allChats.length - 1; i >= 0; i--) {
         showChatOnScreen(allChats[i], currentUserId);
         if (i === 0) localStorage.setItem("lastChatId", allChats[i].id);
       }
     }
+
+    // Whenever the server emits 'login', log the login message
+    socket.on("login", () => {
+      connected = true;
+      // Display the welcome message
+      const chatBoxMessages = document.getElementById("chatBoxMessages");
+      const chatText = document.createElement("p");
+      chatText.className = "joined";
+      chatText.innerHTML = `Welcome to <strong>${GroupWithThisId.groupName}</strong> Group`;
+      chatBoxMessages.appendChild(chatText);
+      chatText.scrollIntoView();
+    });
+
+    // Whenever the server emits 'user joined', log it in the chat body
+    socket.on("user joined", (data) => {
+      const chatBoxMessages = document.getElementById("chatBoxMessages");
+      const chatText = document.createElement("p");
+      let chatterName;
+      if (data.data.currentUserId === currentUserId) {
+        chatterName = "You";
+      } else {
+        chatterName = data.data.currentUserName.split(" ")[0];
+        chatText.className = "joined";
+      }
+      chatText.innerHTML = `<strong>${chatterName}</strong> joined the chat!`;
+      chatBoxMessages.appendChild(chatText);
+      chatText.scrollIntoView();
+    });
+
+    // Whenever the server emits 'user joined', log it in the chat body
+    socket.on("user left", (data) => {
+      const chatBoxMessages = document.getElementById("chatBoxMessages");
+      const chatText = document.createElement("p");
+      let chatterName;
+      if (data.data.currentUserId === currentUserId) {
+        chatterName = "You";
+      } else {
+        chatterName = data.data.currentUserName.split(" ")[0];
+        chatText.className = "joined";
+      }
+      chatText.innerHTML = `<strong>${chatterName}</strong> left the chat!`;
+      chatBoxMessages.appendChild(chatText);
+      chatText.scrollIntoView();
+    });
   } catch (error) {
     if (error.response) {
       console.log(error);
@@ -72,7 +108,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 async function findAllGroupsOfThisUser() {
   try {
     const {
-      data: { success, groups, currentUserId },
+      data: { success, groups, currentUserId, currentUserName },
     } = await axios("http://localhost:3000/api/group", {
       headers: {
         Authorization: token,
@@ -81,6 +117,8 @@ async function findAllGroupsOfThisUser() {
     if (!success) return alert("something went wrong in finding groups!");
 
     localStorage.setItem("currentUserId", currentUserId);
+    socket.emit("add user", { currentUserName, currentUserId, groupId });
+    socket.emit("join-group", groupId);
 
     const groupList = document.getElementById("groupList");
 
@@ -185,6 +223,7 @@ chatBoxForm.addEventListener("submit", async (e) => {
     );
     if (success) {
       showChatOnScreen(createdChat, currentUserId);
+      socket.emit("new message", { createdChat, currentUserId });
 
       localStorage.setItem("lastChatId", createdChat.id);
 
@@ -345,4 +384,13 @@ newGroupForm.addEventListener("submit", async (e) => {
   } catch (error) {
     console.log(error);
   }
+});
+
+socket.on("new message", (data) => {
+  const {
+    currentUserName,
+    message: { createdChat },
+  } = data;
+  chat = { ...createdChat, user: { fullName: currentUserName } };
+  showChatOnScreen(chat);
 });

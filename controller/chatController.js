@@ -29,6 +29,7 @@ exports.getAllChats = async (req, res, next) => {
 
   const allChats = await Chat.findAll({
     where: { groupId },
+    attributes: { exclude: ["updatedAt"] },
     include: [
       {
         model: User,
@@ -85,10 +86,21 @@ exports.sendMessage = async (req, res, next) => {
     });
 
   try {
-    const createdChat = await req.user.createChat({ chat: chatText, groupId });
-    res
-      .status(200)
-      .json({ success: true, currentUserId: req.user.id, createdChat });
+    const createdChat = await req.user.createChat(
+      { chat: chatText, groupId },
+      {
+        include: {
+          model: User,
+          attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+        },
+      }
+    );
+    res.status(200).json({
+      success: true,
+      currentUserId: req.user.id,
+      currentUserFullName: req.user.fullName,
+      createdChat,
+    });
   } catch (error) {
     console.log(error);
   }
