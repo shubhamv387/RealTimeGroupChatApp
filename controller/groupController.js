@@ -14,14 +14,12 @@ exports.getUserAllGroups = async (req, res, next) => {
         order: ["groupAdminId", "ASC"],
       },
     });
-    res
-      .status(200)
-      .json({
-        success: true,
-        groups,
-        currentUserId: req.user.id,
-        currentUserName: req.user.fullName,
-      });
+    res.status(200).json({
+      success: true,
+      groups,
+      currentUserId: req.user.id,
+      currentUserName: req.user.fullName,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -145,8 +143,14 @@ exports.makeNewAdminToTheGroup = async (req, res, next) => {
   await GroupUser.update(req.body, {
     where: { groupId, userId },
   });
-  res.status(200).json({
-    success: true,
-    message: "making user to admin of this group",
-  });
+  if (req.body.isGroupAdmin)
+    res.status(200).json({
+      success: true,
+      message: "making user to admin of this group",
+    });
+  else
+    res.status(200).json({
+      success: true,
+      message: "removing admin access from this user",
+    });
 };

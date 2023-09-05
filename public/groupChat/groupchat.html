@@ -281,10 +281,23 @@
       <!-- CHAT MESSAGE SECTION END -->
       <!-- CHAT MESSAGE FORM START -->
       <div class="container-fluid bg-dark py-3">
-        <div class="container p-0 w-100" style="max-width: 700px">
-          <form id="chatBoxForm" class="d-flex flex-row w-100">
+        <div class="container d-flex p-0 w-100" style="max-width: 700px">
+          <form
+            method="POST"
+            enctype="multipart/form-data"
+            id="chatBoxForm"
+            class="d-flex flex-row w-100 align-items-center"
+          >
+            <label class="btn btn-warning me-1 px-2" for="fileUpload"
+              ><i class="fa-solid fa-photo-film fs-5"></i
+            ></label>
             <input
-              required
+              type="file"
+              class="form-control d-none"
+              id="fileUpload"
+              accept="image/*"
+            />
+            <input
               class="form-control me-1"
               type="text"
               name="chatText"

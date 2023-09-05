@@ -72,8 +72,8 @@ window.addEventListener("DOMContentLoaded", async () => {
         chatterName = "You";
       } else {
         chatterName = data.data.currentUserName.split(" ")[0];
-        chatText.className = "joined";
       }
+      chatText.className = "joined";
       chatText.innerHTML = `<strong>${chatterName}</strong> joined the chat!`;
       chatBoxMessages.appendChild(chatText);
       chatText.scrollIntoView();
@@ -101,7 +101,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
     alert("Something went wrong!");
     console.log(error);
-    window.location.replace("../login/login.html");
+    // window.location.replace("../login/login.html");
   }
 });
 
@@ -117,8 +117,9 @@ async function findAllGroupsOfThisUser() {
     if (!success) return alert("something went wrong in finding groups!");
 
     localStorage.setItem("currentUserId", currentUserId);
-    socket.emit("add user", { currentUserName, currentUserId, groupId });
+
     socket.emit("join-group", groupId);
+    socket.emit("add user", { currentUserName, currentUserId, groupId });
 
     const groupList = document.getElementById("groupList");
 
@@ -156,58 +157,54 @@ function switchGroup(groupId) {
   window.location.reload();
 }
 
-// setInterval(reloadMessages, 1000); // do not delete this line
-async function reloadMessages() {
-  try {
-    const locallySavedLastChatId = JSON.parse(
-      localStorage.getItem("lastChatId")
-    );
-
-    const {
-      data: { success, allChats, currentUserId, currentUserFullName },
-    } = await axios.get(
-      `http://localhost:3000/api/chatbox/${locallySavedLastChatId}/${groupId}`,
-      {
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
-    document.getElementById("welcomeText").innerHTML = `Hello, ${
-      currentUserFullName.split(" ")[0]
-    }!`;
-
-    if (!success) return alert("Something went wrong!");
-
-    localStorage.setItem("currentUserId", currentUserId);
-    if (allChats.length > 0) {
-      for (let i = allChats.length - 1; i >= 0; i--) {
-        showChatOnScreen(allChats[i], currentUserId);
-        if (i === 0) localStorage.setItem("lastChatId", allChats[i].id);
-      }
-
-      // const chatterName = document.createElement("p");
-      // chatterName.className = "joined";
-      // chatterName.innerHTML = `<strong>You</strong> joined the chat`;
-      // chatBoxMessages.appendChild(chatterName);
-    }
-  } catch (error) {
-    alert("Something went wrong!");
-    console.log(error);
-    window.location.replace("../login/login.html");
+const fileUploadEle = document.getElementById("fileUpload");
+fileUploadEle.addEventListener("change", function (e) {
+  const file = e.target.files[0];
+  if (file) {
+    document.getElementById("chatText").disabled = true;
+    document.getElementById("chatText").placeholder =
+      "Click SEND to upload your file...";
+  } else {
+    document.getElementById("chatText").disabled = false;
+    document.getElementById("chatText").placeholder = "Type a message...";
   }
-}
+});
 
 chatBoxForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const chatTextEle = document.getElementById("chatText");
-  try {
-    const chatText = chatTextEle.value.trim();
+  // console.log(fileUploadEle.files[0]);
 
-    if (!chatText) {
-      chatTextEle.value = "";
-      return alert("speces only, are not allowed");
+  const chatTextEle = document.getElementById("chatText");
+  let chatText;
+  try {
+    if (fileUploadEle.value) {
+      const file = fileUploadEle.files[0];
+      console.log(file);
+
+      const { data } = await axios.post(
+        `http://localhost:3000/api/chatbox/upload/${groupId}`,
+        { file },
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (!data.success) return alert("something went wrong");
+      chatText = data.fileUrl;
+      // after successfull upload change the text input to emable
+      chatTextEle.disabled = false;
+      chatTextEle.placeholder = "Type a message...";
+      fileUploadEle.value = "";
+    } else {
+      const chatMessage = chatTextEle.value.trim();
+      if (!chatMessage) {
+        chatTextEle.value = "";
+        return alert("Type a message...");
+      } else chatText = chatMessage;
     }
 
     const {
@@ -246,7 +243,14 @@ function showChatOnScreen(chat, currentUserId) {
     chatterName = chat.user.fullName.split(" ")[0];
     chatText.className = "left";
   }
-  chatText.innerHTML = `<strong>${chatterName} :</strong> ${chat.chat}`;
+  if (chat.chat.substring(0, 5) === "https") {
+    const img = document.createElement("img");
+    img.className = "w-100 my-2";
+    chatText.style.borderRadius = "10px ";
+    img.src = chat.chat;
+    chatText.innerHTML = `<strong>${chatterName}</strong> : shared this file...`;
+    chatText.appendChild(img);
+  } else chatText.innerHTML = `<strong>${chatterName} :</strong> ${chat.chat}`;
   chatBoxMessages.appendChild(chatText);
   chatText.scrollIntoView();
 }
@@ -332,7 +336,7 @@ newGroupForm.addEventListener("submit", async (e) => {
       addMember.innerHTML = user.id === currentUserId ? "You" : user.fullName;
 
       const selectMemberBtn = document.createElement("button");
-      selectMemberBtn.className = "btn btn-success";
+      selectMemberBtn.className = "btn btn-success btn-sm";
 
       if (user.id === currentUserId) {
         selectMemberBtn.textContent = "Selected";

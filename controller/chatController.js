@@ -3,6 +3,7 @@ const User = require("../model/User");
 const { Op } = require("sequelize");
 const { isMemberExistInThisGroup } = require("../services/groupServices");
 const Group = require("../model/Group");
+const { uploadeToS3 } = require("../services/S3Services");
 
 exports.getAllChats = async (req, res, next) => {
   const { groupId } = req.params;
@@ -103,5 +104,32 @@ exports.sendMessage = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
+  }
+};
+
+// @desc    Download user total expenses
+// @route   GET /user/downloadexpensesreport
+// @access  Premium Users Only
+exports.uploadFileData = async (req, res, next) => {
+  const { groupId } = req.params;
+  try {
+    const fileContent = Buffer.from(req.file.buffer, "binary");
+
+    const fileName = `${req.user.id}/${groupId}/${req.file.originalname}`;
+
+    const fileUrl = await uploadeToS3(fileContent, fileName);
+
+    console.log(fileUrl);
+
+    res.status(200).json({
+      success: true,
+      fileUrl,
+      message: "Download Successful",
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Download Failed", err: error });
   }
 };
