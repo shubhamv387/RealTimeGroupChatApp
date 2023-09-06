@@ -4,13 +4,15 @@ const cors = require("cors");
 const sequelize = require("./config/database");
 const path = require("path");
 const server = require("http").createServer(app);
-const io = require("socket.io")(server);
-const fileUpload = require("express-fileupload");
+const io = require("socket.io")(server, {
+  cors: {
+    origin: ["http://127.0.0.1:5500"],
+  },
+});
 
 require("dotenv").config();
 
 app.use(express.json());
-// app.use(fileUpload({ limits: { fileSize: 50 * 1024 * 1024 } }));
 
 app.use(cors({ origin: "http://127.0.0.1:5500", credentials: true }));
 
@@ -24,6 +26,10 @@ const User = require("./model/User");
 const Chat = require("./model/Chat");
 const Group = require("./model/Group");
 const GroupUser = require("./model/GroupUser");
+const ChatArchive = require("./model/ChatArchive");
+
+//services
+const { archiveCron } = require("./services/chatArchiveServices");
 
 app.use("/api/users", userRouter);
 app.use("/api/chatbox", chatRouter);
@@ -42,11 +48,17 @@ app.use((req, res, next) => {
 User.hasMany(Chat);
 Chat.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 
+User.hasMany(ChatArchive);
+ChatArchive.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+
 User.belongsToMany(Group, { through: GroupUser });
 Group.belongsToMany(User, { through: GroupUser });
 
 Group.hasMany(Chat);
 Chat.belongsTo(Group, { constraints: true, onDelete: "CASCADE" });
+
+Group.hasMany(ChatArchive);
+ChatArchive.belongsTo(Group, { constraints: true, onDelete: "CASCADE" });
 
 const PORT = process.env.PORT || 3000;
 
@@ -81,10 +93,10 @@ io.on("connection", (socket) => {
   // when the client emits 'add user', this listens and executes
   socket.on("add user", (data) => {
     // console.log(data);
-    // if (addedUser) return;
+    if (addedUser) return;
     // we store the currentUserName in the socket session for this client
     socket.data = data;
-    // addedUser = true;
+    addedUser = true;
     socket.emit("login", {
       data,
       message: "login into chat",
@@ -108,3 +120,5 @@ io.on("connection", (socket) => {
     }
   });
 });
+
+archiveCron.start();

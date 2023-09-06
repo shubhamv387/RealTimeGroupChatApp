@@ -3,11 +3,17 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const sequelize = require("../config/database");
 
+// @desc    Get all User
+// @route   GET /api/users
+// @access  Web App Admin
 exports.getAllUsers = async (req, res, next) => {
   const allUsers = await userServices.findAllUsers();
   res.status(200).json({ success: true, allUsers: allUsers });
 };
 
+// @desc    Signup into this Web App
+// @route   POST /api/users/signup
+// @access  Public
 exports.signUp = async (req, res, next) => {
   const user = req.body;
   const t = await sequelize.transaction();
@@ -49,6 +55,9 @@ exports.signUp = async (req, res, next) => {
   }
 };
 
+// @desc    Login into this Web App
+// @route   POST /api/users/signup
+// @access  Public
 exports.logIn = async (req, res, next) => {
   const { email, password } = req.body;
   try {

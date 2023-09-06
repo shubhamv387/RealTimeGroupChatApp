@@ -8,6 +8,10 @@ exports.uploadeToS3 = async (data, fileName) => {
   const s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET,
+    region: process.env.IAM_USER_REGION,
+    httpOptions: {
+      timeout: 60000,
+    },
   });
 
   var params = {

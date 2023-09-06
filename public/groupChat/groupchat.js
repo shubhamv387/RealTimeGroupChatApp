@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io("http://localhost:3000");
 const chatBoxForm = document.getElementById("chatBoxForm");
 const token = localStorage.getItem("token");
 let groupId = localStorage.getItem("groupId");
@@ -180,7 +180,6 @@ chatBoxForm.addEventListener("submit", async (e) => {
   try {
     if (fileUploadEle.value) {
       const file = fileUploadEle.files[0];
-      console.log(file);
 
       const { data } = await axios.post(
         `http://localhost:3000/api/chatbox/upload/${groupId}`,
@@ -245,12 +244,15 @@ function showChatOnScreen(chat, currentUserId) {
   }
   if (chat.chat.substring(0, 5) === "https") {
     const img = document.createElement("img");
-    img.className = "w-100 my-2";
-    chatText.style.borderRadius = "10px ";
+    img.className = "w-100 my-2 rounded-3";
+    chatText.style.borderRadius = "10px";
+    chatText.style.width = "70%";
+    chatText.style.maxWidth = "350px";
     img.src = chat.chat;
     chatText.innerHTML = `<strong>${chatterName}</strong> : shared this file...`;
     chatText.appendChild(img);
   } else chatText.innerHTML = `<strong>${chatterName} :</strong> ${chat.chat}`;
+
   chatBoxMessages.appendChild(chatText);
   chatText.scrollIntoView();
 }

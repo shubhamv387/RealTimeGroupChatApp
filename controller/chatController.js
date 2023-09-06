@@ -5,6 +5,9 @@ const { isMemberExistInThisGroup } = require("../services/groupServices");
 const Group = require("../model/Group");
 const { uploadeToS3 } = require("../services/S3Services");
 
+// @desc    to get all chats of a particular group limit by 20
+// @route   GET /api/chatbox/:groupId
+// @access  Group Members
 exports.getAllChats = async (req, res, next) => {
   const { groupId } = req.params;
   if (groupId == "null") {
@@ -13,22 +16,10 @@ exports.getAllChats = async (req, res, next) => {
       .json({ success: false, message: "Open Your Group to Start Chat!" });
   }
 
-  const GroupWithThisId = await Group.findByPk(req.params.groupId);
+  // Promise.All method implemented here to reduce time consumption
+  const GroupWithThisId = Group.findByPk(req.params.groupId);
 
-  if (!GroupWithThisId)
-    return res
-      .status(404)
-      .json({ success: false, message: "Group not Found!" });
-
-  const isUserExist = await isMemberExistInThisGroup(req.user.id, groupId);
-
-  if (!isUserExist)
-    return res.status(400).json({
-      success: false,
-      message: "You are not a member of this group! Check your group",
-    });
-
-  const allChats = await Chat.findAll({
+  const allChats = Chat.findAll({
     where: { groupId },
     attributes: { exclude: ["updatedAt"] },
     include: [
@@ -41,20 +32,31 @@ exports.getAllChats = async (req, res, next) => {
     limit: 20,
   });
 
+  const response = await Promise.all([GroupWithThisId, allChats]);
+
+  if (!response[0])
+    return res
+      .status(404)
+      .json({ success: false, message: "Group not Found!" });
+
   res.status(200).json({
     success: true,
     currentUserId: req.user.id,
     currentUserFullName: req.user.fullName,
-    allChats,
-    GroupWithThisId,
+    allChats: response[1],
+    GroupWithThisId: response[0],
   });
 };
 
+// this one is not required now because of socket.io
+// @desc    Get all chats wi id greater than last chat id
+// @route   GET /api/chatbox//:chatId/:groupId
+// @access  Group Members
 exports.getLimitedChats = async (req, res, next) => {
   let { chatId, groupId } = req.params;
 
   if (chatId === "0") {
-    this.getAllChats(req, res, next);
+    await this.getAllChats(req, res, next);
   } else {
     const allChats = await Chat.findAll({
       where: { groupId, id: { [Op.gt]: parseInt(chatId) } },
@@ -74,6 +76,9 @@ exports.getLimitedChats = async (req, res, next) => {
   }
 };
 
+// @desc    Send new message to group
+// @route   GET /api/chatbox/chat/:groupId
+// @access  Group Members
 exports.sendMessage = async (req, res, next) => {
   const { chatText } = req.body;
   const { groupId } = req.params;
@@ -107,29 +112,28 @@ exports.sendMessage = async (req, res, next) => {
   }
 };
 
-// @desc    Download user total expenses
-// @route   GET /user/downloadexpensesreport
-// @access  Premium Users Only
+// @desc    Upload images to group
+// @route   GET /api/chatbox/upload/:groupId
+// @access  Group Members
 exports.uploadFileData = async (req, res, next) => {
-  const { groupId } = req.params;
   try {
     const fileContent = Buffer.from(req.file.buffer, "binary");
 
-    const fileName = `${req.user.id}/${groupId}/${req.file.originalname}`;
+    const fileName = `${req.user.id}/${req.file.originalname}`;
 
-    const fileUrl = await uploadeToS3(fileContent, fileName);
+    const mimetype = req.file.mimetype;
 
-    console.log(fileUrl);
+    const fileUrl = await uploadeToS3(fileContent, fileName, mimetype);
 
     res.status(200).json({
       success: true,
       fileUrl,
-      message: "Download Successful",
+      message: "Upload Successful",
     });
   } catch (error) {
     console.log(error);
     res
       .status(500)
-      .json({ success: false, message: "Download Failed", err: error });
+      .json({ success: false, message: "Upload Failed", err: error });
   }
 };
