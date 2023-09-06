@@ -20,6 +20,7 @@ app.use(cors({ origin: "http://127.0.0.1:5500", credentials: true }));
 const userRouter = require("./router/userRouter");
 const chatRouter = require("./router/chatRouter");
 const groupRouter = require("./router/groupRouter");
+const userPasswordRouter = require("./router/userPassword");
 
 //Models
 const User = require("./model/User");
@@ -30,8 +31,10 @@ const ChatArchive = require("./model/ChatArchive");
 
 //services
 const { archiveCron } = require("./services/chatArchiveServices");
+const ForgotPasswordRequest = require("./model/ForgotPasswordRequests");
 
 app.use("/api/users", userRouter);
+app.use("/password", userPasswordRouter);
 app.use("/api/chatbox", chatRouter);
 app.use("/api/group", groupRouter);
 
@@ -47,6 +50,12 @@ app.use((req, res, next) => {
 
 User.hasMany(Chat);
 Chat.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+
+User.hasMany(ForgotPasswordRequest);
+ForgotPasswordRequest.belongsTo(User, {
+  constraints: true,
+  onDelete: "CASCADE",
+});
 
 User.hasMany(ChatArchive);
 ChatArchive.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
