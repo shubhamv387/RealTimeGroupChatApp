@@ -12,11 +12,14 @@ window.addEventListener("DOMContentLoaded", async () => {
         success,
         group: { ...group },
       },
-    } = await axios.get(`http://13.48.147.235/api/group/${currentGroupId}`, {
-      headers: {
-        Authorization: token,
-      },
-    });
+    } = await axios.get(
+      `http://13.48.147.235:3000/api/group/${currentGroupId}`,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
 
     // console.log(group);
 
@@ -41,7 +44,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         if (result) {
           try {
             const { data } = await axios.delete(
-              `http://13.48.147.235/api/group/${currentGroupId}`,
+              `http://13.48.147.235:3000/api/group/${currentGroupId}`,
               {
                 headers: {
                   Authorization: token,
@@ -109,7 +112,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
               try {
                 const { data } = await axios.put(
-                  `http://13.48.147.235/api/group/${group.id}/${member.id}`,
+                  `http://13.48.147.235:3000/api/group/${group.id}/${member.id}`,
                   { isGroupAdmin: false },
                   {
                     headers: {
@@ -138,7 +141,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
             try {
               const { data } = await axios.put(
-                `http://13.48.147.235/api/group/${group.id}/${member.id}`,
+                `http://13.48.147.235:3000/api/group/${group.id}/${member.id}`,
                 { isGroupAdmin: true },
                 {
                   headers: {
@@ -159,7 +162,7 @@ window.addEventListener("DOMContentLoaded", async () => {
           deleteBtn.addEventListener("click", async () => {
             try {
               const { data } = await axios.delete(
-                `http://13.48.147.235/api/group/${currentGroupId}/${member.id}`,
+                `http://13.48.147.235:3000/api/group/${currentGroupId}/${member.id}`,
                 {
                   headers: {
                     Authorization: token,
@@ -201,7 +204,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       const {
         data: { success, users },
       } = await axios.get(
-        `http://13.48.147.235/api/group/all-users/${currentGroupId}`,
+        `http://13.48.147.235:3000/api/group/all-users/${currentGroupId}`,
         {
           headers: {
             Authorization: token,
@@ -228,7 +231,7 @@ window.addEventListener("DOMContentLoaded", async () => {
           selectMemberBtn.addEventListener("click", async () => {
             try {
               const { data } = await axios.post(
-                "http://13.48.147.235/api/group/add-users",
+                "http://13.48.147.235:3000/api/group/add-users",
                 { groupId: currentGroupId, userIds: [user.id] },
                 {
                   headers: {

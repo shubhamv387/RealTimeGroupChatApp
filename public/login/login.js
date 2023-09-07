@@ -13,7 +13,7 @@ loginForm.addEventListener("submit", async (e) => {
   try {
     const {
       data: { success, message, token },
-    } = await axios.post("http://13.48.147.235/api/users/login", userObj);
+    } = await axios.post("http://13.48.147.235:3000/api/users/login", userObj);
 
     if (!success) {
       alert(message);
@@ -123,7 +123,7 @@ async function getResetPasswordEmail(e) {
   try {
     const {
       data: { success },
-    } = await axios.post("http://13.48.147.235/password/forgotpassword", {
+    } = await axios.post("http://13.48.147.235:3000/password/forgotpassword", {
       email: emailForResetPass.value,
     });
 

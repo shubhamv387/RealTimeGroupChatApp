@@ -1,7 +1,7 @@
 const express = require("express");
 const groupController = require("../controller/groupController");
 const { authUser } = require("../middleware/authMiddleware");
-const { isGroupAdmin } = require("../middleware/groupAdminMiddleware");
+const { isGroupAdmin } = require("../middleware/GroupAdminMiddleware");
 const { isGroupMember } = require("../middleware/groupMemberMiddleware");
 
 const router = express.Router();
