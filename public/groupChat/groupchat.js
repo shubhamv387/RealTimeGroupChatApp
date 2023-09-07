@@ -1,4 +1,4 @@
-const socket = io("http://localhost:3000");
+const socket = io("http://13.48.147.235");
 const chatBoxForm = document.getElementById("chatBoxForm");
 const token = localStorage.getItem("token");
 let groupId = localStorage.getItem("groupId");
@@ -18,7 +18,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         currentUserFullName,
         GroupWithThisId,
       },
-    } = await axios.get(`http://localhost:3000/api/chatbox/${groupId}`, {
+    } = await axios.get(`http://13.48.147.235/api/chatbox/${groupId}`, {
       headers: {
         Authorization: token,
       },
@@ -109,7 +109,7 @@ async function findAllGroupsOfThisUser() {
   try {
     const {
       data: { success, groups, currentUserId, currentUserName },
-    } = await axios("http://localhost:3000/api/group", {
+    } = await axios("http://13.48.147.235/api/group", {
       headers: {
         Authorization: token,
       },
@@ -190,7 +190,7 @@ chatBoxForm.addEventListener("submit", async (e) => {
       const file = fileUploadEle.files[0];
       startLoader();
       const { data } = await axios.post(
-        `http://localhost:3000/api/chatbox/upload/${groupId}`,
+        `http://13.48.147.235/api/chatbox/upload/${groupId}`,
         { file },
         {
           headers: {
@@ -217,7 +217,7 @@ chatBoxForm.addEventListener("submit", async (e) => {
     const {
       data: { success, createdChat, currentUserId },
     } = await axios.post(
-      `http://localhost:3000/api/chatbox/chat/${groupId}`,
+      `http://13.48.147.235/api/chatbox/chat/${groupId}`,
       { chatText },
       {
         headers: {
@@ -299,7 +299,7 @@ newGroupForm.addEventListener("submit", async (e) => {
     const {
       data: { success, createdGroup },
     } = await axios.post(
-      "http://localhost:3000/api/group/create-group",
+      "http://13.48.147.235/api/group/create-group",
       { groupName: groupNameEle.value },
       {
         headers: {
@@ -326,7 +326,7 @@ newGroupForm.addEventListener("submit", async (e) => {
 
     alert("New Group created Successfully!");
 
-    const { data } = await axios.get("http://localhost:3000/api/users", {
+    const { data } = await axios.get("http://13.48.147.235/api/users", {
       headers: {
         Authorization: token,
       },
@@ -388,7 +388,7 @@ newGroupForm.addEventListener("submit", async (e) => {
 
       try {
         const { data } = await axios.post(
-          "http://localhost:3000/api/group/add-users",
+          "http://13.48.147.235/api/group/add-users",
           { groupId: createdGroup.id, userIds: allMembersArray },
           {
             headers: {

@@ -17,7 +17,7 @@ signupForm.addEventListener("submit", async (e) => {
   try {
     const {
       data: { token, createdUser },
-    } = await axios.post("http://localhost:3000/api/users/signup", userObj);
+    } = await axios.post("http://13.48.147.235/api/users/signup", userObj);
 
     localStorage.setItem("token", token);
 
