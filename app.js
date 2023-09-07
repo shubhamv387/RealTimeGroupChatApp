@@ -41,7 +41,7 @@ app.use("/api/group", groupRouter);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  res.status(200).json({ success: true, message: "page not found!" });
+  res.status(200).json({ success: false, message: "page not found!" });
 });
 
 // app.use((req, res, next) => {
@@ -76,7 +76,9 @@ sequelize
   .sync()
   .then(() => {
     server.listen(PORT, () =>
-      console.log(`server is running on http://localhost:${PORT}`)
+      console.log(
+        `server is running in ${process.env.NODE_ENV} mode on http://localhost:${PORT}`
+      )
     );
   })
   .catch((err) => console.log(err));

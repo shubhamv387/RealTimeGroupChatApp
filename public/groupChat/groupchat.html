@@ -90,7 +90,7 @@
       /* Scroll Bar End */
     </style>
   </head>
-  <body>
+  <body class="position-relative">
     <!-- HEADER START -->
     <div
       class="container-fluid bg-dark d-flex justify-content-center"
@@ -304,12 +304,14 @@
               id="chatText"
               placeholder="Type a message..."
             />
-            <input
+            <button
               id="chatSubmitBtn"
               class="btn btn-warning"
               type="submit"
               value="SEND"
-            />
+            >
+              <i class="fa-solid fa-paper-plane fs-5"></i>
+            </button>
           </form>
         </div>
       </div>
@@ -318,6 +320,27 @@
 
     <!-- CREATE NEW GROUP START -->
     <!-- CREATE NEW GROUP END -->
+
+    <!-- LOADER START -->
+    <div
+      id="loaderDiv"
+      class="position-absolute t-0"
+      style="
+        top: 70px;
+        left: 0;
+        background: #ffffff7f;
+        width: 100vw;
+        height: calc(100vh - 70px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <!-- LOADER END -->
 
     <!-- Socket IO CDN -->
     <script

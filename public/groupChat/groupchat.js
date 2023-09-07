@@ -101,7 +101,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
     alert("Something went wrong!");
     console.log(error);
-    // window.location.replace("../login/login.html");
+    window.location.replace("../login/login.html");
   }
 });
 
@@ -170,17 +170,25 @@ fileUploadEle.addEventListener("change", function (e) {
   }
 });
 
+function startLoader() {
+  const loaderDiv = document.getElementById("loaderDiv");
+  loaderDiv.style.display = "flex";
+}
+
+function stopLoader() {
+  const loaderDiv = document.getElementById("loaderDiv");
+  loaderDiv.style.display = "none";
+}
+
 chatBoxForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-
-  // console.log(fileUploadEle.files[0]);
 
   const chatTextEle = document.getElementById("chatText");
   let chatText;
   try {
     if (fileUploadEle.value) {
       const file = fileUploadEle.files[0];
-
+      startLoader();
       const { data } = await axios.post(
         `http://localhost:3000/api/chatbox/upload/${groupId}`,
         { file },
@@ -191,7 +199,7 @@ chatBoxForm.addEventListener("submit", async (e) => {
           },
         }
       );
-
+      stopLoader();
       if (!data.success) return alert("something went wrong");
       chatText = data.fileUrl;
       // after successfull upload change the text input to emable
@@ -226,6 +234,7 @@ chatBoxForm.addEventListener("submit", async (e) => {
       chatTextEle.value = "";
     } else alert("something went wrong!");
   } catch (error) {
+    stopLoader();
     if (error.response) alert(error.response.data.message);
     console.log(error);
   }
