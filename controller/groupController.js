@@ -152,7 +152,7 @@ exports.getUsersNotInThisGroup = async (req, res, next) => {
         id: {
           [Op.notIn]: [
             sequelize.literal(
-              `SELECT userId FROM GroupUsers WHERE groupId = ${groupId}`
+              `SELECT userId FROM groupUsers WHERE groupId = ${groupId}`
             ),
           ],
         },
