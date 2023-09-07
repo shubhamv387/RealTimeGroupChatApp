@@ -27,6 +27,7 @@
     <style>
       body {
         font-family: cursive !important;
+        overflow: hidden;
       }
       .left {
         display: inline;
@@ -125,7 +126,7 @@
                   class="dropdown-item"
                   href="#"
                   onclick='{
-                    document.getElementById("newGroupFormDiv").style.display="block";
+                    document.getElementById("newGroupFormDiv").style.display="flex";
                     document.getElementById("otherDivs").style.pointerEvents="none";
                 }'
                   >Create New Group</a
@@ -164,89 +165,92 @@
 
     <!-- CREATE NEW GROUP FORM START -->
     <div
-      class="container p-5 position-absolute"
       id="newGroupFormDiv"
+      class="position-absolute t-0"
       style="
-        max-width: 475px;
-        left: 50%;
-        top: 50%;
-        transform: translate(-48%, -50%);
+        top: 70px;
+        left: 0;
+        background: #000000be;
+        width: 100vw;
+        height: calc(100vh - 70px);
         display: none;
+        justify-content: center;
+        align-items: center;
       "
     >
-      <form
-        id="newGroupForm"
-        class="row g-3 form-control position-relative bg-light shadow-lg border border-1 border-secondary rounded-3"
+      <div
+        class="container p-5 position-absolute"
+        id=""
+        style="max-width: 475px"
       >
-        <div class="col">
-          <label for="groupName" class="form-label">Group Name:</label>
-          <input required type="text" class="form-control" id="groupName" />
-        </div>
-        <div class="col-12">
-          <button type="submit" class="btn btn-success mb-3">
-            Create Group
-          </button>
-        </div>
-        <a
-          onclick='{
+        <form
+          id="newGroupForm"
+          class="row g-3 form-control position-relative bg-light shadow-lg border border-1 border-secondary rounded-3"
+        >
+          <div class="col">
+            <label for="groupName" class="form-label">Group Name:</label>
+            <input required type="text" class="form-control" id="groupName" />
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-success mb-3">
+              Create Group
+            </button>
+          </div>
+          <a
+            onclick='{
               document.getElementById("newGroupFormDiv").style.display="none";
               document.getElementById("otherDivs").style.pointerEvents="all";
-            // document.getElementById("newGroupForm").remove();
           }'
-          id="formClose"
-          class="d-flex btn w-auto border-0 bg-transparent"
-          style="position: absolute; top: -30px; right: -20px"
-        >
-          <i
-            class="fa-solid fa-circle-xmark d-inline fs-1 text-danger bg-light rounded-circle"
-          ></i>
-        </a>
-      </form>
+            id="formClose"
+            class="d-flex btn w-auto border-0"
+            style="position: absolute; top: -35px; right: -30px"
+          >
+            <i
+              class="fa-solid fa-circle-xmark d-inline fs-1 text-danger bg-light rounded-circle"
+            ></i>
+          </a>
+        </form>
+      </div>
     </div>
     <!-- CREATE NEW GROUP FORM END -->
 
     <!-- ADD USERS TO NEW GROUP START -->
     <div
-      class="container position-absolute p-0 bg-light shadow-lg border border-1 border-secondary rounded-3"
       id="addMembersToGroupDiv"
+      class="position-absolute t-0"
       style="
-        max-width: 90vw;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+        top: 70px;
+        left: 0;
+        background: #000000be;
+        width: 100vw;
+        height: calc(100vh - 70px);
         display: none;
+        justify-content: center;
+        align-items: center;
       "
     >
-      <a
-        onclick='{
+      <div
+        class="p-0 position-relative bg-light shadow-lg border border-1 border-secondary rounded-3"
+        id="addMembersToGroupDivEle"
+        style="max-width: 650px; width: calc(100vw - 50px)"
+      >
+        <a
+          onclick='{
           document.getElementById("addMembersToGroupDiv").style.display="none";
           document.getElementById("otherDivs").style.pointerEvents="all";
-        // document.getElementById("newGroupForm").remove();
       }'
-        id="formClose"
-        class="d-flex btn w-auto border-0 bg-transparent p-0"
-        style="position: absolute; top: -10px; right: -10px; z-index: 99"
-      >
-        <i
-          class="fa-solid fa-circle-xmark d-inline fs-1 text-danger bg-light rounded-circle"
-        ></i>
-      </a>
-      <li class="list-group-item bg-primary text-center text-white fs-5">
-        All Users
-      </li>
-      <!-- <ul
-        id="addMemberList"
-        class="list-group list-unstyled"
-        style="max-height: 75vh; overflow-y: auto"
-      >
-        <li
-          class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center"
+          id="formClose"
+          class="d-flex btn w-auto border-0 bg-transparent p-0"
+          style="position: absolute; top: -10px; right: -10px; z-index: 99"
         >
-          Shubham Kumar Vishwakarma
-          <button class="btn btn-success">Add</button>
+          <i
+            class="fa-solid fa-circle-xmark d-inline fs-1 text-danger bg-light rounded-circle"
+          ></i>
+        </a>
+        <li class="list-group-item bg-primary text-center text-white fs-5">
+          All Users
         </li>
-      </ul> -->
-      <!-- <button class="btn btn-dark m-2">Add Selected Members</button> -->
+      </div>
     </div>
     <!-- ADD USERS TO NEW GROUP END -->
 

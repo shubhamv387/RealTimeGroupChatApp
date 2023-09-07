@@ -5,7 +5,7 @@ const sequelize = require("../config/database");
 
 // @desc    Get all User
 // @route   GET /api/users
-// @access  Web App Admin
+// @access  Private
 exports.getAllUsers = async (req, res, next) => {
   const allUsers = await userServices.findAllUsers();
   res.status(200).json({ success: true, allUsers: allUsers });

@@ -273,8 +273,16 @@ logout.addEventListener("click", () => {
   window.location.replace("../login/login.html");
 });
 
-/* GROUP CHAT FUNCTIONS */
+socket.on("new message", (data) => {
+  const {
+    currentUserName,
+    message: { createdChat },
+  } = data;
+  chat = { ...createdChat, user: { fullName: currentUserName } };
+  showChatOnScreen(chat);
+});
 
+/* GROUP CHAT FUNCTIONS */
 const newGroupForm = document.getElementById("newGroupForm");
 
 newGroupForm.addEventListener("submit", async (e) => {
@@ -331,6 +339,9 @@ newGroupForm.addEventListener("submit", async (e) => {
     const addMembersToGroupDiv = document.getElementById(
       "addMembersToGroupDiv"
     );
+    const addMembersToGroupDivEle = document.getElementById(
+      "addMembersToGroupDivEle"
+    );
 
     const allMembersArray = [];
     const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
@@ -364,13 +375,13 @@ newGroupForm.addEventListener("submit", async (e) => {
       addMemberList.appendChild(addMember);
     });
 
-    addMembersToGroupDiv.appendChild(addMemberList);
+    addMembersToGroupDivEle.appendChild(addMemberList);
 
     const addSelectedMemberBtn = document.createElement("button");
     addSelectedMemberBtn.className = "btn btn-dark m-2";
     addSelectedMemberBtn.textContent = "Add Selected Members";
 
-    addMembersToGroupDiv.appendChild(addSelectedMemberBtn);
+    addMembersToGroupDivEle.appendChild(addSelectedMemberBtn);
 
     addSelectedMemberBtn.addEventListener("click", async () => {
       if (allMembersArray.length <= 0) return alert("select atleat one menber");
@@ -395,17 +406,8 @@ newGroupForm.addEventListener("submit", async (e) => {
     });
 
     document.getElementById("newGroupFormDiv").style.display = "none";
-    addMembersToGroupDiv.style.display = "block";
+    addMembersToGroupDiv.style.display = "flex";
   } catch (error) {
     console.log(error);
   }
-});
-
-socket.on("new message", (data) => {
-  const {
-    currentUserName,
-    message: { createdChat },
-  } = data;
-  chat = { ...createdChat, user: { fullName: currentUserName } };
-  showChatOnScreen(chat);
 });
