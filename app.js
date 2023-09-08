@@ -6,7 +6,12 @@ const path = require("path");
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
-    origin: ["http://127.0.0.1:5500"],
+    origin: [
+      "http://127.0.0.1:5500",
+      "http://13.48.147.235:3000",
+      "http://13.48.147.235",
+    ],
+    credentials: true,
   },
 });
 
@@ -14,7 +19,16 @@ require("dotenv").config();
 
 app.use(express.json());
 
-app.use(cors({ origin: "http://127.0.0.1:5500", credentials: true }));
+app.use(
+  cors({
+    origin: [
+      "http://127.0.0.1:5500",
+      "http://13.48.147.235:3000",
+      "http://13.48.147.235",
+    ],
+    credentials: true,
+  })
+);
 
 //Routers
 const userRouter = require("./router/userRouter");
@@ -43,10 +57,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use((req, res, next) => {
   res.status(200).json({ success: false, message: "page not found!" });
 });
-
-// app.use((req, res, next) => {
-//   res.sendFile(path.join(__dirname, `public/${req.url}`));
-// });
 
 User.hasMany(Chat);
 Chat.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
