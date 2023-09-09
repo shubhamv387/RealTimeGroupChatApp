@@ -184,7 +184,7 @@ exports.createNewPassword = async (req, res, next) => {
 exports.PostCreateNewPassword = async (req, res, next) => {
   const { id } = req.params;
   const { pass, confirmPass } = req.body;
-  console.log(id);
+
   if (pass !== confirmPass)
     return res
       .status(400)
