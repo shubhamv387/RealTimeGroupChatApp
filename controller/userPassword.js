@@ -6,7 +6,7 @@ const User = require("../model/User");
 const sequelize = require("../config/database");
 
 // @desc    Sending password reset mail to User
-// @route   POST /users/password/forgotpassword
+// @route   POST /api/password/forgotpassword
 // @access  Public
 exports.resetForgotPassword = async (req, res, next) => {
   try {
@@ -59,7 +59,7 @@ exports.resetForgotPassword = async (req, res, next) => {
 };
 
 // @desc    Reset Forgot Password
-// @route   GET /users/password/resetpassword/:id
+// @route   GET /api/password/resetpassword/:id
 // @access  Private
 exports.createNewPassword = async (req, res, next) => {
   try {
@@ -179,7 +179,7 @@ exports.createNewPassword = async (req, res, next) => {
 };
 
 // @desc    Reset Forgot Password
-// @route   POST /users/password/resetpassword/:id
+// @route   POST /api/password/resetpassword/:id
 // @access  Private
 exports.PostCreateNewPassword = async (req, res, next) => {
   const { id } = req.params;
