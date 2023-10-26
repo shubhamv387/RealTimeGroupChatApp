@@ -23,6 +23,10 @@ window.addEventListener("DOMContentLoaded", async () => {
         Authorization: token,
       },
     });
+
+    console.log(allChats);
+    console.log(GroupWithThisId);
+
     if (!success) return alert("Something went wrong!");
 
     document.getElementById("welcomeText").innerHTML = `Hello, ${
@@ -227,6 +231,7 @@ chatBoxForm.addEventListener("submit", async (e) => {
     );
     if (success) {
       showChatOnScreen(createdChat, currentUserId);
+
       socket.emit("new message", { createdChat, currentUserId });
 
       localStorage.setItem("lastChatId", createdChat.id);
